@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Component;
 
@@ -23,8 +22,12 @@ public class WebSecurityConfig {
 	private final TokenProvider tokenProvider;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+//	@Bean
+//	public PasswordEncoder passwordEncoder() {
+//		return new BCryptPasswordEncoder();
+//	}
 	@Bean
-	public PasswordEncoder passwordEncoder() {
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
@@ -44,8 +47,9 @@ public class WebSecurityConfig {
 				.authorizeRequests()
 				.antMatchers("/auth/**").permitAll()
 				.antMatchers("/members/**").authenticated()
-				.antMatchers(HttpMethod.GET, "/products").permitAll()
-				.antMatchers("/products/**").hasRole("ADMIN")
+				.antMatchers(HttpMethod.GET, "/recipes").permitAll()
+				.antMatchers(HttpMethod.GET, "/blogs").permitAll()
+//				.antMatchers("/recipes/**").hasRole("USER")
 				.anyRequest().authenticated()
 
 				.and()
