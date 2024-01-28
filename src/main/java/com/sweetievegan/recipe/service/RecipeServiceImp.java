@@ -102,7 +102,6 @@ public class RecipeServiceImp implements RecipeService {
 					.build());
 		}
 		for (String recipeImagePath : recipeImageList) {
-//			log.debug("{}", recipeImagePath);
 			recipe.addRecipeImage(new RecipeImage(recipeImagePath));
 		}
 		/* Image files */
