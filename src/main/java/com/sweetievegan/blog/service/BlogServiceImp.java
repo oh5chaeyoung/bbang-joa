@@ -34,6 +34,8 @@ public class BlogServiceImp implements BlogService {
 					.id(blog.getId())
 					.title(blog.getTitle())
 					.author(blog.getAuthor())
+					.tag(blog.getTags())
+					.createDate(blog.getCreateDate())
 					.build();
 
 			/* Image files ****************************/
