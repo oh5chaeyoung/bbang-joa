@@ -1,5 +1,7 @@
 package com.sweetievegan.blog.service;
 
+import com.sweetievegan.auth.domain.entity.Member;
+import com.sweetievegan.auth.service.MemberService;
 import com.sweetievegan.blog.domain.entity.Blog;
 import com.sweetievegan.blog.domain.entity.BlogImage;
 import com.sweetievegan.blog.domain.repository.BlogImageRepository;
@@ -7,8 +9,8 @@ import com.sweetievegan.blog.domain.repository.BlogRepository;
 import com.sweetievegan.blog.dto.request.BlogRegisterRequest;
 import com.sweetievegan.blog.dto.response.BlogDetailResponse;
 import com.sweetievegan.blog.dto.response.BlogListResponse;
-import com.sweetievegan.recipe.domain.entity.RecipeImage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,10 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class BlogServiceImp implements BlogService {
+	private final MemberService memberService;
 	private final BlogRepository blogRepository;
 	private final BlogImageService blogImageService;
 	private final BlogImageRepository blogImageRepository;
@@ -33,7 +37,7 @@ public class BlogServiceImp implements BlogService {
 			BlogListResponse response = BlogListResponse.builder()
 					.id(blog.getId())
 					.title(blog.getTitle())
-					.author(blog.getAuthor())
+					.author(blog.getMember().getNickname())
 					.tag(blog.getTags())
 					.createDate(blog.getCreateDate())
 					.build();
@@ -58,7 +62,7 @@ public class BlogServiceImp implements BlogService {
 		BlogDetailResponse response = BlogDetailResponse.builder()
 				.id(blog.getId())
 				.title(blog.getTitle())
-				.author(blog.getAuthor())
+				.author(blog.getMember().getNickname())
 				.content(blog.getContent())
 				.tags(blog.getTags())
 				.build();
@@ -76,10 +80,13 @@ public class BlogServiceImp implements BlogService {
 	}
 
 	@Override
-	public Long addBlog(BlogRegisterRequest request, List<MultipartFile> file) {
+	public Long addBlog(BlogRegisterRequest request, List<MultipartFile> file, Long memberId) {
+		log.debug("{}", memberId);
+		Member member = memberService.getMemberDetail(memberId);
+
 		Blog blog = Blog.builder()
 				.title(request.getTitle())
-				.author(request.getAuthor())
+				.member(member)
 				.content(request.getContent())
 				.tags(request.getTags())
 				.blogImages(new ArrayList<>())

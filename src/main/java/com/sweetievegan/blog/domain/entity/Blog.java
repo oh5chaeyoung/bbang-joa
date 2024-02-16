@@ -1,5 +1,6 @@
 package com.sweetievegan.blog.domain.entity;
 
+import com.sweetievegan.auth.domain.entity.Member;
 import com.sweetievegan.blog.dto.request.BlogRegisterRequest;
 import com.sweetievegan.recipe.domain.entity.BaseTime;
 import lombok.*;
@@ -20,12 +21,15 @@ public class Blog extends BaseTime {
 	private Long id;
 
 	private String title;
-	private String author;
 	private String content;
 	private String tags;
 
 	@OneToMany(mappedBy = "blog")
 	private List<BlogImage> blogImages;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id")
+	private Member member;
 
 	public void addBlogImage(final BlogImage blogImage) {
 		blogImages.add(blogImage);
