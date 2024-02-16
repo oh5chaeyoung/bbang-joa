@@ -10,7 +10,7 @@ import java.util.List;
 public interface BlogService {
 	List<BlogListResponse> getAllBlogs();
 	BlogDetailResponse findBlogByBlogId(Long blogId);
-	Long addBlog(BlogRegisterRequest request, MultipartFile file);
+	Long addBlog(BlogRegisterRequest request, List<MultipartFile> file);
 	BlogRegisterRequest updateBlogDetail(Long blogId, BlogRegisterRequest request);
 	Long removeBlog(Long blogId);
 }

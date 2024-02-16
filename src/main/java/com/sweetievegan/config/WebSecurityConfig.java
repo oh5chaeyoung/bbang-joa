@@ -49,6 +49,8 @@ public class WebSecurityConfig {
 				.antMatchers("/members/**").authenticated()
 				.antMatchers(HttpMethod.GET, "/recipes").permitAll()
 				.antMatchers(HttpMethod.GET, "/blogs").permitAll()
+				.antMatchers(HttpMethod.GET, "/recipes/**").permitAll()
+				.antMatchers(HttpMethod.GET, "/blogs/**").permitAll()
 //				.antMatchers("/recipes/**").hasRole("USER")
 				.anyRequest().authenticated()
 

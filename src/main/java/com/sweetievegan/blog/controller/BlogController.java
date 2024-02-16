@@ -33,10 +33,8 @@ public class BlogController {
 
 	@PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Long> blogAdd(
-			@RequestPart(value = "file", required = false) MultipartFile file,
+			@RequestPart(value = "file", required = false) List<MultipartFile> file,
 			@RequestPart BlogRegisterRequest request) {
-		log.debug("{}", file);
-		log.debug("{}", request);
 
 		return ResponseEntity.status(HttpStatus.OK).body(blogService.addBlog(request, file));
 	}
