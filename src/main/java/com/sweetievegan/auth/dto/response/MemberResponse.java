@@ -11,11 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class MemberResponse {
+	private Long id;
 	private String email;
 	private String nickname;
 
 	public static MemberResponse of(Member member) {
 		return MemberResponse.builder()
+				.id(member.getId())
 				.email(member.getEmail())
 				.nickname(member.getNickname())
 				.build();

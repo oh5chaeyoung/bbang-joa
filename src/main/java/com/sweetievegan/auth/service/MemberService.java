@@ -43,4 +43,12 @@ public class MemberService {
 		member.setPassword(passwordEncoder.encode((newPassword)));
 		return MemberResponse.of(memberRepository.save(member));
 	}
+
+	public Member getMemberDetail(Long id) {
+		Member member = memberRepository.findMemberById(id);
+		if (member == null) {
+			throw new RuntimeException("로그인 유저 정보가 없습니다.");
+		}
+		return member;
+	}
 }

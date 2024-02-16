@@ -1,5 +1,7 @@
 package com.sweetievegan.blog.controller;
 
+import com.sweetievegan.auth.dto.response.MemberResponse;
+import com.sweetievegan.auth.service.MemberService;
 import com.sweetievegan.blog.dto.request.BlogRegisterRequest;
 import com.sweetievegan.blog.dto.response.BlogDetailResponse;
 import com.sweetievegan.blog.dto.response.BlogListResponse;
@@ -19,6 +21,7 @@ import java.util.List;
 @RequestMapping("/blogs")
 @RequiredArgsConstructor
 public class BlogController {
+	private final MemberService memberService;
 	private final BlogService blogService;
 
 	@GetMapping("")
@@ -35,8 +38,7 @@ public class BlogController {
 	public ResponseEntity<Long> blogAdd(
 			@RequestPart(value = "file", required = false) List<MultipartFile> file,
 			@RequestPart BlogRegisterRequest request) {
-
-		return ResponseEntity.status(HttpStatus.OK).body(blogService.addBlog(request, file));
+		return ResponseEntity.status(HttpStatus.OK).body(blogService.addBlog(request, file, memberService.getMyInfoBySecurity().getId()));
 	}
 
 	@PutMapping("/{blogId}")
