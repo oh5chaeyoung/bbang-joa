@@ -16,6 +16,7 @@ public class MemberResponse {
 	private String nickname;
 	private String firstname;
 	private String lastname;
+	private String profile;
 
 	public static MemberResponse of(Member member) {
 		return MemberResponse.builder()
@@ -24,6 +25,7 @@ public class MemberResponse {
 				.nickname(member.getNickname())
 				.firstname(member.getFirstname())
 				.lastname(member.getLastname())
+				.profile(member.getProfile())
 				.build();
 	}
 }
