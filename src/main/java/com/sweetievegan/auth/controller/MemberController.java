@@ -6,6 +6,7 @@ import com.sweetievegan.auth.dto.request.EmailCheckRequest;
 import com.sweetievegan.auth.dto.response.MemberResponse;
 import com.sweetievegan.auth.service.MemberServiceImp;
 import com.sweetievegan.blog.dto.response.BlogListResponse;
+import com.sweetievegan.recipe.dto.response.RecipeListResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,12 @@ public class MemberController {
 	public ResponseEntity<List<BlogListResponse>> getMyBlogs(@AuthenticationPrincipal User user){
 		Long memberId = Long.parseLong(user.getUsername());
 		return ResponseEntity.ok(memberServiceImp.getMyBlogs(memberId));
+	}
+
+	@GetMapping("/me/recipes")
+	public ResponseEntity<List<RecipeListResponse>> getMyRecipes(@AuthenticationPrincipal User user){
+		Long memberId = Long.parseLong(user.getUsername());
+		return ResponseEntity.ok(memberServiceImp.getMyRecipes(memberId));
 	}
 
 	@PostMapping("/email")
