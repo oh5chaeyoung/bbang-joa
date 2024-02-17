@@ -1,8 +1,8 @@
 package com.sweetievegan.auth.controller;
 
-import com.sweetievegan.auth.dto.request.ChangePasswordRequest;
+import com.sweetievegan.auth.dto.request.NicknameModifyRequest;
+import com.sweetievegan.auth.dto.request.PasswordModifyRequest;
 import com.sweetievegan.auth.dto.request.EmailCheckRequest;
-import com.sweetievegan.auth.dto.request.MemberRegisterRequest;
 import com.sweetievegan.auth.dto.response.MemberResponse;
 import com.sweetievegan.auth.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -32,12 +32,12 @@ public class MemberController {
 	}
 
 	@PostMapping("/nickname")
-	public ResponseEntity<MemberResponse> setMemberNickname(@RequestBody MemberRegisterRequest requestDto){
-		return ResponseEntity.ok(memberService.changeMemberNickname(requestDto.getEmail(),requestDto.getNickname() ));
+	public ResponseEntity<MemberResponse> setMemberNickname(@RequestBody NicknameModifyRequest request){
+		return ResponseEntity.ok(memberService.changeMemberNickname(request.getEmail(), request.getNickname()));
 	}
 
 	@PostMapping("/password")
-	public ResponseEntity<MemberResponse> setMemberPassword(@RequestBody ChangePasswordRequest requestDto){
-		return ResponseEntity.ok(memberService.changeMemberPassword(requestDto.getEmail(),requestDto.getExPassword(), requestDto.getNewPassword()));
+	public ResponseEntity<MemberResponse> setMemberPassword(@RequestBody PasswordModifyRequest request){
+		return ResponseEntity.ok(memberService.changeMemberPassword(request.getExPassword(), request.getNewPassword()));
 	}
 }
