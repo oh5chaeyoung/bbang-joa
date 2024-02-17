@@ -1,6 +1,6 @@
 package com.sweetievegan.blog.domain.entity;
 
-import com.sweetievegan.recipe.domain.entity.BaseTime;
+import com.sweetievegan.util.domain.entity.BaseTime;
 import lombok.*;
 
 import javax.persistence.*;

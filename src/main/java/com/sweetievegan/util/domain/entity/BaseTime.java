@@ -1,4 +1,4 @@
-package com.sweetievegan.recipe.domain.entity;
+package com.sweetievegan.util.domain.entity;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

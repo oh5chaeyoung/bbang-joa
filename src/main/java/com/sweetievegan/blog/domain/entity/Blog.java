@@ -2,7 +2,7 @@ package com.sweetievegan.blog.domain.entity;
 
 import com.sweetievegan.auth.domain.entity.Member;
 import com.sweetievegan.blog.dto.request.BlogRegisterRequest;
-import com.sweetievegan.recipe.domain.entity.BaseTime;
+import com.sweetievegan.util.domain.entity.BaseTime;
 import lombok.*;
 
 import javax.persistence.*;

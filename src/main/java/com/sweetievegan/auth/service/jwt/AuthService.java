@@ -7,8 +7,7 @@ import com.sweetievegan.auth.dto.request.MemberRegisterRequest;
 import com.sweetievegan.auth.dto.response.MemberResponse;
 import com.sweetievegan.auth.jwt.TokenDto;
 import com.sweetievegan.auth.jwt.TokenProvider;
-import com.sweetievegan.blog.service.BlogImageService;
-import com.sweetievegan.blog.service.BlogService;
+import com.sweetievegan.util.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Transactional
 public class AuthService {
-	private final BlogImageService blogImageService;
+	private final ImageService imageService;
 	private final AuthenticationManagerBuilder managerBuilder;
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
@@ -36,7 +35,7 @@ public class AuthService {
 		}
 
 		Member member = request.toMember(passwordEncoder);
-		member.setProfile(blogImageService.addOneFile(file, "member"));
+		member.setProfile(imageService.addOneFile(file, "member"));
 		return MemberResponse.of(memberRepository.save(member));
 	}
 
