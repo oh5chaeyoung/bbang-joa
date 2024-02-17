@@ -36,10 +36,8 @@ public class RecipeController {
 			@RequestPart(value = "file", required = false) List<MultipartFile> file,
 			@RequestPart RecipeRegisterRequest request,
 			@AuthenticationPrincipal User user) {
-		log.info("{}", user);
-		/* auth 서버 : access token -> memberId */
-//		return ResponseEntity.status(HttpStatus.OK).body(productService.addProduct(memberId, request, file));
-		return ResponseEntity.status(HttpStatus.OK).body(recipeService.addRecipe(request, file));
+		Long memberId = Long.parseLong(user.getUsername());
+		return ResponseEntity.status(HttpStatus.OK).body(recipeService.addRecipe(request, file, memberId));
 	}
 	@PutMapping("/{recipeId}")
 	public ResponseEntity<RecipeRegisterRequest> recipeModify(
