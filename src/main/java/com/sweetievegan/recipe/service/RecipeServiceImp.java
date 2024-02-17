@@ -9,6 +9,7 @@ import com.sweetievegan.recipe.domain.repository.RecipeRepository;
 import com.sweetievegan.recipe.dto.response.RecipeDetailResponse;
 import com.sweetievegan.recipe.dto.response.RecipeListResponse;
 import com.sweetievegan.recipe.dto.request.RecipeRegisterRequest;
+import com.sweetievegan.util.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 public class RecipeServiceImp implements RecipeService {
 	private final MemberService memberService;
 	private final RecipeRepository recipeRepository;
-	private final RecipeImageService recipeImageService;
+	private final ImageService ImageService;
 	private final RecipeImageRepository recipeImageRepository;
 
 	@Override
@@ -98,7 +99,7 @@ public class RecipeServiceImp implements RecipeService {
 				.build();
 
 		/* Image files ****************************/
-		List<String> recipeImageList = recipeImageService.addFile(file, "recipe");
+		List<String> recipeImageList = ImageService.addFile(file, "recipe");
 		for(String fn : recipeImageList) {
 			recipeImageRepository.save(RecipeImage.builder()
 					.imageName(fn)
@@ -124,7 +125,7 @@ public class RecipeServiceImp implements RecipeService {
 			recipeImageRepository.delete(d);
 		}
 
-		List<String> recipeImageList = recipeImageService.addFile(file, "recipe");
+		List<String> recipeImageList = ImageService.addFile(file, "recipe");
 		for(String fn : recipeImageList) {
 			recipeImageRepository.save(RecipeImage.builder()
 					.imageName(fn)

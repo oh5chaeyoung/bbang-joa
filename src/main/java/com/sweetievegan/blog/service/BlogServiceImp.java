@@ -9,6 +9,7 @@ import com.sweetievegan.blog.domain.repository.BlogRepository;
 import com.sweetievegan.blog.dto.request.BlogRegisterRequest;
 import com.sweetievegan.blog.dto.response.BlogDetailResponse;
 import com.sweetievegan.blog.dto.response.BlogListResponse;
+import com.sweetievegan.util.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 public class BlogServiceImp implements BlogService {
 	private final MemberService memberService;
 	private final BlogRepository blogRepository;
-	private final BlogImageService blogImageService;
+	private final ImageService imageService;
 	private final BlogImageRepository blogImageRepository;
 	@Override
 	public List<BlogListResponse> getAllBlogs() {
@@ -93,7 +94,7 @@ public class BlogServiceImp implements BlogService {
 				.build();
 
 		/* Image files ****************************/
-		List<String> blogImageList = blogImageService.addFile(file, "blog");
+		List<String> blogImageList = imageService.addFile(file, "blog");
 		for(String fn : blogImageList) {
 			blogImageRepository.save(BlogImage.builder()
 					.imageName(fn)
