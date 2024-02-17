@@ -1,5 +1,7 @@
 package com.sweetievegan.recipe.service;
 
+import com.sweetievegan.auth.domain.entity.Member;
+import com.sweetievegan.auth.service.MemberService;
 import com.sweetievegan.recipe.domain.entity.Recipe;
 import com.sweetievegan.recipe.domain.entity.RecipeImage;
 import com.sweetievegan.recipe.domain.repository.RecipeImageRepository;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class RecipeServiceImp implements RecipeService {
+	private final MemberService memberService;
 	private final RecipeRepository recipeRepository;
 	private final RecipeImageService recipeImageService;
 	private final RecipeImageRepository recipeImageRepository;
@@ -57,7 +60,7 @@ public class RecipeServiceImp implements RecipeService {
 		Recipe recipe = recipeRepository.findRecipeById(recipeId);
 		RecipeDetailResponse response = RecipeDetailResponse.builder()
 				.title(recipe.getTitle())
-				.author(recipe.getAuthor())
+				.author(recipe.getMember().getNickname())
 				.duration(recipe.getDuration())
 				.level(recipe.getLevel())
 				.description(recipe.getDescription())
@@ -79,10 +82,12 @@ public class RecipeServiceImp implements RecipeService {
 		return response;
 	}
 	@Override
-	public Long addRecipe(RecipeRegisterRequest request, List<MultipartFile> file) {
+	public Long addRecipe(RecipeRegisterRequest request, List<MultipartFile> file, Long memberId) {
+		Member member = memberService.getMemberDetail(memberId);
+
 		Recipe recipe = Recipe.builder()
 				.title(request.getTitle())
-				.author(request.getAuthor())
+				.member(member)
 				.duration(request.getDuration())
 				.level(request.getLevel())
 				.description(request.getDescription())

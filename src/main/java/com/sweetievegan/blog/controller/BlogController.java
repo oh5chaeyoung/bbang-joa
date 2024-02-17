@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,8 +39,10 @@ public class BlogController {
 	@PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Long> blogAdd(
 			@RequestPart(value = "file", required = false) List<MultipartFile> file,
-			@RequestPart BlogRegisterRequest request) {
-		return ResponseEntity.status(HttpStatus.OK).body(blogService.addBlog(request, file, memberService.getMyInfoBySecurity().getId()));
+			@RequestPart BlogRegisterRequest request,
+			@AuthenticationPrincipal User user) {
+		Long memberId = Long.parseLong(user.getUsername());
+		return ResponseEntity.status(HttpStatus.OK).body(blogService.addBlog(request, file, memberId));
 	}
 
 	@PutMapping("/{blogId}")

@@ -10,7 +10,7 @@ import java.util.List;
 public interface RecipeService {
 	List<RecipeListResponse> getAllRecipes();
 	RecipeDetailResponse findRecipeByRecipeId(Long recipeId);
-	Long addRecipe(RecipeRegisterRequest request, List<MultipartFile> file);
+	Long addRecipe(RecipeRegisterRequest request, List<MultipartFile> file, Long memberId);
 	RecipeRegisterRequest updateRecipeDetail(Long recipeId, RecipeRegisterRequest request, List<MultipartFile> file);
 	Long removeRecipe(Long recipeId);
 }
