@@ -1,7 +1,6 @@
 package com.sweetievegan.blog.controller;
 
-import com.sweetievegan.auth.dto.response.MemberResponse;
-import com.sweetievegan.auth.service.MemberService;
+import com.sweetievegan.auth.service.MemberServiceImp;
 import com.sweetievegan.blog.dto.request.BlogRegisterRequest;
 import com.sweetievegan.blog.dto.response.BlogDetailResponse;
 import com.sweetievegan.blog.dto.response.BlogListResponse;
@@ -23,7 +22,7 @@ import java.util.List;
 @RequestMapping("/blogs")
 @RequiredArgsConstructor
 public class BlogController {
-	private final MemberService memberService;
+	private final MemberServiceImp memberServiceImp;
 	private final BlogService blogService;
 
 	@GetMapping("")

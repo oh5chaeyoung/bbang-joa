@@ -1,7 +1,7 @@
 package com.sweetievegan.blog.service;
 
 import com.sweetievegan.auth.domain.entity.Member;
-import com.sweetievegan.auth.service.MemberService;
+import com.sweetievegan.auth.service.MemberServiceImp;
 import com.sweetievegan.blog.domain.entity.Blog;
 import com.sweetievegan.blog.domain.entity.BlogImage;
 import com.sweetievegan.blog.domain.repository.BlogImageRepository;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class BlogServiceImp implements BlogService {
-	private final MemberService memberService;
+	private final MemberServiceImp memberServiceImp;
 	private final BlogRepository blogRepository;
 	private final ImageService imageService;
 	private final BlogImageRepository blogImageRepository;
@@ -83,7 +83,7 @@ public class BlogServiceImp implements BlogService {
 	@Override
 	public Long addBlog(BlogRegisterRequest request, List<MultipartFile> file, Long memberId) {
 		log.debug("{}", memberId);
-		Member member = memberService.getMemberDetail(memberId);
+		Member member = memberServiceImp.getMemberDetail(memberId);
 
 		Blog blog = Blog.builder()
 				.title(request.getTitle())
