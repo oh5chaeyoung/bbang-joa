@@ -28,6 +28,8 @@ public class Member {
 
 	private String email;
 	private String nickname;
+	private String firstname;
+	private String lastname;
 	private String password;
 	private boolean isDeleted;
 

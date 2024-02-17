@@ -14,12 +14,16 @@ public class MemberResponse {
 	private Long id;
 	private String email;
 	private String nickname;
+	private String firstname;
+	private String lastname;
 
 	public static MemberResponse of(Member member) {
 		return MemberResponse.builder()
 				.id(member.getId())
 				.email(member.getEmail())
 				.nickname(member.getNickname())
+				.firstname(member.getFirstname())
+				.lastname(member.getLastname())
 				.build();
 	}
 }
