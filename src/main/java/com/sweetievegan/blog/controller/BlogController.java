@@ -45,10 +45,12 @@ public class BlogController {
 	}
 
 	@PutMapping("/{blogId}")
-	public ResponseEntity<BlogRegisterRequest> blogModify(
+	public ResponseEntity<BlogDetailResponse> blogModify(
 			@PathVariable("blogId") Long blogId,
-			@RequestBody BlogRegisterRequest request) {
-		return ResponseEntity.status(HttpStatus.OK).body(blogService.updateBlogDetail(blogId, request));
+			@RequestBody BlogRegisterRequest request,
+			@AuthenticationPrincipal User user) {
+		Long memberId = Long.parseLong(user.getUsername());
+		return ResponseEntity.status(HttpStatus.OK).body(blogService.updateBlogDetail(memberId, blogId, request));
 	}
 
 	@DeleteMapping("/{blogId}")
