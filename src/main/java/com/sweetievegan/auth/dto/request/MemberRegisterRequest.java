@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.persistence.Column;
+
 @Data
 @Builder
 @AllArgsConstructor

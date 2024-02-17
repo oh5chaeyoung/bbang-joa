@@ -27,6 +27,22 @@ public class BlogImageServiceImp implements BlogImageService {
 	private String bucket;
 	private final AmazonS3 amazonS3;
 
+	public String addOneFile(MultipartFile file, String dirName) {
+		String fileName = createFileName(file.getOriginalFilename(), dirName);
+		ObjectMetadata objectMetadata = new ObjectMetadata();
+		objectMetadata.setContentLength(file.getSize());
+		objectMetadata.setContentType(file.getContentType());
+
+		try (InputStream inputStream = file.getInputStream()) {
+			amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+					.withCannedAcl(CannedAccessControlList.PublicRead));
+		} catch (IOException e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+		}
+
+		return ("https://bbangjoa-bucket.s3.ap-northeast-2.amazonaws.com/"+fileName);
+	}
+
 	public List<String> addFile(List<MultipartFile> multipartFile, String dirName) {
 		List<String> fileNameList = new ArrayList<>();
 

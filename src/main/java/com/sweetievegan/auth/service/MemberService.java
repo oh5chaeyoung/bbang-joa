@@ -18,11 +18,11 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 
-	public MemberResponse getMyInfoBySecurity(){
-		return memberRepository.findById(SecurityUtil.getCurrentMemberId())
-				.map(MemberResponse::of)
-				.orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
-	}
+//	public MemberResponse getMyInfoBySecurity(){
+//		return memberRepository.findById(SecurityUtil.getCurrentMemberId())
+//				.map(MemberResponse::of)
+//				.orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
+//	}
 
 	@Transactional
 	public MemberResponse changeMemberNickname(String email, String nickname){
