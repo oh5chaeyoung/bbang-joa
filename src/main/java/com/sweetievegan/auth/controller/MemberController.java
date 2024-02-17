@@ -8,6 +8,8 @@ import com.sweetievegan.auth.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -16,14 +18,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MemberController {
 	private final MemberService memberService;
-/*
+
 	@GetMapping("/me")
-	public ResponseEntity<MemberResponseDto> getMyMemberInfo(){
-		MemberResponseDto myInfoBySecurity = memberService.getMyInfoBySecurity();
-		return ResponseEntity.ok(myInfoBySecurity);
+	public ResponseEntity<MemberResponse> getMyMemberInfo(@AuthenticationPrincipal User user){
+		Long memberId = Long.parseLong(user.getUsername());
+		MemberResponse myInfo = MemberResponse.of(memberService.getMemberDetail(memberId));
+		return ResponseEntity.ok(myInfo);
 	}
 
- */
 	@PostMapping("/email")
 	public ResponseEntity<String> checkEmail(@RequestBody EmailCheckRequest request) {
 		return ResponseEntity.ok(memberService.checkEmail(request.getEmail()));
