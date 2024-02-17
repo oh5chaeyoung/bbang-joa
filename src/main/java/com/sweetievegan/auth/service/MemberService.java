@@ -51,4 +51,12 @@ public class MemberService {
 		}
 		return member;
 	}
+
+	public String checkEmail(String email) {
+		boolean exist = memberRepository.existsByEmail(email);
+		if(exist) {
+			throw new RuntimeException("이미 가입된 이메일 입니다.");
+		}
+		return "가입할 수 있는 이메일 입니다.";
+	}
 }

@@ -1,6 +1,7 @@
 package com.sweetievegan.auth.controller;
 
 import com.sweetievegan.auth.dto.request.ChangePasswordRequest;
+import com.sweetievegan.auth.dto.request.EmailCheckRequest;
 import com.sweetievegan.auth.dto.request.MemberRegisterRequest;
 import com.sweetievegan.auth.dto.response.MemberResponse;
 import com.sweetievegan.auth.service.MemberService;
@@ -23,6 +24,10 @@ public class MemberController {
 	}
 
  */
+	@PostMapping("/email")
+	public ResponseEntity<String> checkEmail(@RequestBody EmailCheckRequest request) {
+		return ResponseEntity.ok(memberService.checkEmail(request.getEmail()));
+	}
 
 	@PostMapping("/nickname")
 	public ResponseEntity<MemberResponse> setMemberNickname(@RequestBody MemberRegisterRequest requestDto){
