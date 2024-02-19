@@ -31,11 +31,6 @@ public class Blog extends BaseTime {
 	@JoinColumn(name = "member_id")
 	private Member member;
 
-	public void addBlogImage(final BlogImage blogImage) {
-		blogImages.add(blogImage);
-		blogImage.setBlog(this);
-	}
-
 	public void editBlog(BlogRegisterRequest request) {
 		this.title = request.getTitle();
 		this.content = request.getContent();
