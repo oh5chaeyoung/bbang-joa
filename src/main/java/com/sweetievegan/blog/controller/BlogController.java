@@ -44,11 +44,14 @@ public class BlogController {
 		return ResponseEntity.status(HttpStatus.OK).body(blogService.addBlog(request, file, memberId));
 	}
 
-	@PutMapping("/{blogId}")
-	public ResponseEntity<BlogRegisterRequest> blogModify(
+	@PutMapping(value = "/{blogId}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<BlogDetailResponse> blogModify(
 			@PathVariable("blogId") Long blogId,
-			@RequestBody BlogRegisterRequest request) {
-		return ResponseEntity.status(HttpStatus.OK).body(blogService.updateBlogDetail(blogId, request));
+			@RequestPart(value = "file", required = false) List<MultipartFile> file,
+			@RequestPart BlogRegisterRequest request,
+			@AuthenticationPrincipal User user) {
+		Long memberId = Long.parseLong(user.getUsername());
+		return ResponseEntity.status(HttpStatus.OK).body(blogService.updateBlogDetail(memberId, blogId, request, file));
 	}
 
 	@DeleteMapping("/{blogId}")

@@ -82,7 +82,6 @@ public class BlogServiceImp implements BlogService {
 
 	@Override
 	public Long addBlog(BlogRegisterRequest request, List<MultipartFile> file, Long memberId) {
-		log.debug("{}", memberId);
 		Member member = memberServiceImp.getMemberDetail(memberId);
 
 		Blog blog = Blog.builder()
@@ -102,21 +101,43 @@ public class BlogServiceImp implements BlogService {
 					.isDeleted(false)
 					.build());
 		}
-		for (String blogImagePath : blogImageList) {
-			blog.addBlogImage(new BlogImage(blogImagePath));
-		}
 		/* Image files */
 
 		return blogRepository.save(blog).getId();
 	}
 
 	@Override
-	public BlogRegisterRequest updateBlogDetail(Long blogId, BlogRegisterRequest request) {
-		return null;
+	public BlogDetailResponse updateBlogDetail(Long memberId, Long blogId, BlogRegisterRequest request, List<MultipartFile> file) {
+		Blog blog = blogRepository.findBlogById(blogId);
+		if(memberId != blog.getMember().getId()) {
+			throw new RuntimeException("게시글 수정 권한이 없습니다.");
+		}
+		blog.editBlog(request);
+
+		/* Image files ****************************/
+		List<BlogImage> removeBlogImagesList = blog.getBlogImages();
+		for(BlogImage blogImage : removeBlogImagesList) {
+			imageService.removeFile(blogImage.getImageName());
+			blogImageRepository.delete(blogImage);
+		}
+
+		List<String> blogImageList = imageService.addFile(file, "blog");
+		for(String fn : blogImageList) {
+			blogImageRepository.save(BlogImage.builder()
+					.imageName(fn)
+					.blog(blog)
+					.isDeleted(false)
+					.build());
+		}
+		/* Image files */
+
+		return findBlogByBlogId(blogId);
 	}
 
 	@Override
 	public Long removeBlog(Long blogId) {
+		/* implement to remove image */
+
 		blogRepository.deleteById(blogId);
 		return blogId;
 	}

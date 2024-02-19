@@ -40,7 +40,7 @@ public class ImageServiceImp implements ImageService {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
 		}
 
-		return ("https://bbangjoa-bucket.s3.ap-northeast-2.amazonaws.com/"+fileName);
+		return amazonS3.getUrl(bucket, fileName).toString();
 	}
 
 	public List<String> addFile(List<MultipartFile> multipartFile, String dirName) {
@@ -54,7 +54,9 @@ public class ImageServiceImp implements ImageService {
 		return fileNameList;
 	}
 
-	public void removeFile(String fileName) {
+	public void removeFile(String fileUrl) {
+		String splitStr = ".com/";
+		String fileName = fileUrl.substring(fileUrl.lastIndexOf(splitStr) + splitStr.length());
 		amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
 	}
 
