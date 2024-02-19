@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class RecipeServiceImp implements RecipeService {
 	private final MemberServiceImp memberServiceImp;
 	private final RecipeRepository recipeRepository;
-	private final ImageService ImageService;
+	private final ImageService imageService;
 	private final RecipeImageRepository recipeImageRepository;
 
 	@Override
@@ -99,33 +99,33 @@ public class RecipeServiceImp implements RecipeService {
 				.build();
 
 		/* Image files ****************************/
-		List<String> recipeImageList = ImageService.addFile(file, "recipe");
+		List<String> recipeImageList = imageService.addFile(file, "recipe");
 		for(String fn : recipeImageList) {
 			recipeImageRepository.save(RecipeImage.builder()
 					.imageName(fn)
 					.recipe(recipe)
 					.isDeleted(false)
 					.build());
-		}
-		for (String recipeImagePath : recipeImageList) {
-			recipe.addRecipeImage(new RecipeImage(recipeImagePath));
 		}
 		/* Image files */
 
 		return recipeRepository.save(recipe).getId();
 	}
 	@Override
-	public RecipeRegisterRequest updateRecipeDetail(Long recipeId, RecipeRegisterRequest request, List<MultipartFile> file) {
+	public RecipeDetailResponse updateRecipeDetail(String memberId, Long recipeId, RecipeRegisterRequest request, List<MultipartFile> file) {
 		Recipe recipe = recipeRepository.findRecipeById(recipeId);
 		recipe.editRecipe(request);
 
 		/* Image files ****************************/
-		List<RecipeImage> deleteRecipeImageList = recipeImageRepository.findRecipeImageByRecipeId(recipeId);
-		for(RecipeImage d : deleteRecipeImageList) {
-			recipeImageRepository.delete(d);
+		/* remove */
+		List<RecipeImage> removeRecipeImageList = recipeImageRepository.findRecipeImageByRecipeId(recipeId);
+		for(RecipeImage recipeImage : removeRecipeImageList) {
+			imageService.removeFile(recipeImage.getImageName());
+			recipeImageRepository.delete(recipeImage);
 		}
 
-		List<String> recipeImageList = ImageService.addFile(file, "recipe");
+		/* add */
+		List<String> recipeImageList = imageService.addFile(file, "recipe");
 		for(String fn : recipeImageList) {
 			recipeImageRepository.save(RecipeImage.builder()
 					.imageName(fn)
@@ -133,12 +133,9 @@ public class RecipeServiceImp implements RecipeService {
 					.isDeleted(false)
 					.build());
 		}
-		for (String recipeImagePath : recipeImageList) {
-			recipe.addRecipeImage(new RecipeImage(recipeImagePath));
-		}
 		/* Image files */
 
-		return request;
+		return findRecipeByRecipeId(recipeId);
 	}
 	@Override
 	public Long removeRecipe(Long recipeId) {

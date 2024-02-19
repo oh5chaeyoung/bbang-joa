@@ -111,20 +111,20 @@ public class BlogServiceImp implements BlogService {
 	@Override
 	public BlogDetailResponse updateBlogDetail(String memberId, Long blogId, BlogRegisterRequest request, List<MultipartFile> file) {
 		Blog blog = blogRepository.findBlogById(blogId);
-		log.info("{}", memberId);
-		log.info("{}", blog.getMember().getId());
 		if(!memberId.equals(blog.getMember().getId())) {
 			throw new RuntimeException("게시글 수정 권한이 없습니다.");
 		}
 		blog.editBlog(request);
 
 		/* Image files ****************************/
+		/* remove */
 		List<BlogImage> removeBlogImagesList = blog.getBlogImages();
 		for(BlogImage blogImage : removeBlogImagesList) {
 			imageService.removeFile(blogImage.getImageName());
 			blogImageRepository.delete(blogImage);
 		}
 
+		/* add */
 		List<String> blogImageList = imageService.addFile(file, "blog");
 		for(String fn : blogImageList) {
 			blogImageRepository.save(BlogImage.builder()
