@@ -36,6 +36,12 @@ public class AuthService {
 			throw new RuntimeException("이미 가입되어 있는 유저입니다");
 		}
 
+		/* nickname ****************************/
+		if(request.getNickname() == null) {
+			request.setNickname("HelloUser_" + generateSevenDigitRandomNumber());
+		}
+		/* nickname */
+
 		Member member = request.toMember(passwordEncoder);
 		member.setId(createMemberId());
 		member.setProfile(imageService.addOneFile(file, "member"));
@@ -52,4 +58,11 @@ public class AuthService {
 		UUID uuid = UUID.randomUUID();
 		return "user_" + uuid.toString().replace("-", "");
 	}
+
+	public String generateSevenDigitRandomNumber() {
+		int randomNumber = (int) (Math.random() * 10000000);
+		String randomString = String.format("%07d", randomNumber);
+		return randomString;
+	}
+
 }
