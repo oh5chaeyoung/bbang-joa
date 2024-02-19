@@ -82,7 +82,7 @@ public class BlogServiceImp implements BlogService {
 	}
 
 	@Override
-	public Long addBlog(BlogRegisterRequest request, List<MultipartFile> file, Long memberId) {
+	public Long addBlog(BlogRegisterRequest request, List<MultipartFile> file, String memberId) {
 		Member member = memberServiceImp.getMemberDetail(memberId);
 
 		Blog blog = Blog.builder()
@@ -109,9 +109,11 @@ public class BlogServiceImp implements BlogService {
 	}
 
 	@Override
-	public BlogDetailResponse updateBlogDetail(Long memberId, Long blogId, BlogRegisterRequest request, List<MultipartFile> file) {
+	public BlogDetailResponse updateBlogDetail(String memberId, Long blogId, BlogRegisterRequest request, List<MultipartFile> file) {
 		Blog blog = blogRepository.findBlogById(blogId);
-		if(memberId != blog.getMember().getId()) {
+		log.info("{}", memberId);
+		log.info("{}", blog.getMember().getId());
+		if(!memberId.equals(blog.getMember().getId())) {
 			throw new RuntimeException("게시글 수정 권한이 없습니다.");
 		}
 		blog.editBlog(request);

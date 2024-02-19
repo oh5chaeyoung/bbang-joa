@@ -83,7 +83,7 @@ public class RecipeServiceImp implements RecipeService {
 		return response;
 	}
 	@Override
-	public Long addRecipe(RecipeRegisterRequest request, List<MultipartFile> file, Long memberId) {
+	public Long addRecipe(RecipeRegisterRequest request, List<MultipartFile> file, String memberId) {
 		Member member = memberServiceImp.getMemberDetail(memberId);
 
 		Recipe recipe = Recipe.builder()

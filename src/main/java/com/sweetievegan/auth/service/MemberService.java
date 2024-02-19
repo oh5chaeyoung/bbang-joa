@@ -10,8 +10,8 @@ import java.util.List;
 public interface MemberService {
 	MemberResponse changeMemberNickname(String email, String nickname);
 	MemberResponse changeMemberPassword(String exPassword, String newPassword);
-	Member getMemberDetail(Long id);
+	Member getMemberDetail(String id);
 	String checkEmail(String email);
-	List<BlogListResponse> getMyBlogs(Long id);
-	List<RecipeListResponse> getMyRecipes(Long id);
+	List<BlogListResponse> getMyBlogs(String id);
+	List<RecipeListResponse> getMyRecipes(String id);
 }
