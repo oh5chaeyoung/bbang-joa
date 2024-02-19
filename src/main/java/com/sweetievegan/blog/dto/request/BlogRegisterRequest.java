@@ -9,4 +9,5 @@ public class BlogRegisterRequest {
 	private String title;
 	private String content;
 	private String tags;
+	private String summary;
 }
