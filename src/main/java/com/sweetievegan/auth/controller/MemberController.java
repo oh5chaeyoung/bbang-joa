@@ -25,21 +25,18 @@ public class MemberController {
 
 	@GetMapping("/me")
 	public ResponseEntity<MemberResponse> getMyMemberInfo(@AuthenticationPrincipal User user){
-		Long memberId = Long.parseLong(user.getUsername());
-		MemberResponse myInfo = MemberResponse.of(memberServiceImp.getMemberDetail(memberId));
+		MemberResponse myInfo = MemberResponse.of(memberServiceImp.getMemberDetail(user.getUsername()));
 		return ResponseEntity.ok(myInfo);
 	}
 
 	@GetMapping("/me/blogs")
 	public ResponseEntity<List<BlogListResponse>> getMyBlogs(@AuthenticationPrincipal User user){
-		Long memberId = Long.parseLong(user.getUsername());
-		return ResponseEntity.ok(memberServiceImp.getMyBlogs(memberId));
+		return ResponseEntity.ok(memberServiceImp.getMyBlogs(user.getUsername()));
 	}
 
 	@GetMapping("/me/recipes")
 	public ResponseEntity<List<RecipeListResponse>> getMyRecipes(@AuthenticationPrincipal User user){
-		Long memberId = Long.parseLong(user.getUsername());
-		return ResponseEntity.ok(memberServiceImp.getMyRecipes(memberId));
+		return ResponseEntity.ok(memberServiceImp.getMyRecipes(user.getUsername()));
 	}
 
 	@PostMapping("/email")

@@ -24,9 +24,8 @@ import java.util.List;
 @Table(name = "members")
 public class Member {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "member_id")
-	private Long id;
+	private String id;
 
 	private String email;
 	private String nickname;
@@ -43,6 +42,10 @@ public class Member {
 
 	@CreatedDate
 	private LocalDateTime createDate;
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public void setNickname(String nickname){
 		this.nickname = nickname;

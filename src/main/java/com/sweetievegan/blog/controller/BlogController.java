@@ -40,8 +40,7 @@ public class BlogController {
 			@RequestPart(value = "file", required = false) List<MultipartFile> file,
 			@RequestPart BlogRegisterRequest request,
 			@AuthenticationPrincipal User user) {
-		Long memberId = Long.parseLong(user.getUsername());
-		return ResponseEntity.status(HttpStatus.OK).body(blogService.addBlog(request, file, memberId));
+		return ResponseEntity.status(HttpStatus.OK).body(blogService.addBlog(request, file, user.getUsername()));
 	}
 
 	@PutMapping(value = "/{blogId}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
@@ -50,8 +49,7 @@ public class BlogController {
 			@RequestPart(value = "file", required = false) List<MultipartFile> file,
 			@RequestPart BlogRegisterRequest request,
 			@AuthenticationPrincipal User user) {
-		Long memberId = Long.parseLong(user.getUsername());
-		return ResponseEntity.status(HttpStatus.OK).body(blogService.updateBlogDetail(memberId, blogId, request, file));
+		return ResponseEntity.status(HttpStatus.OK).body(blogService.updateBlogDetail(user.getUsername(), blogId, request, file));
 	}
 
 	@DeleteMapping("/{blogId}")

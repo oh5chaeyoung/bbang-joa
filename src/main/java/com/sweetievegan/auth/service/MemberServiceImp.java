@@ -49,7 +49,7 @@ public class MemberServiceImp implements MemberService {
 		return MemberResponse.of(memberRepository.save(member));
 	}
 
-	public Member getMemberDetail(Long id) {
+	public Member getMemberDetail(String id) {
 		Member member = memberRepository.findMemberById(id);
 		if (member == null) {
 			throw new RuntimeException("로그인 유저 정보가 없습니다.");
@@ -66,7 +66,7 @@ public class MemberServiceImp implements MemberService {
 	}
 
 	@Override
-	public List<BlogListResponse> getMyBlogs(Long id) {
+	public List<BlogListResponse> getMyBlogs(String id) {
 		List<Blog> blogs = blogRepository.findBlogsByMemberId(id);
 		List<BlogListResponse> responses = new ArrayList<>();
 		for(Blog blog : blogs) {
@@ -93,7 +93,7 @@ public class MemberServiceImp implements MemberService {
 	}
 
 	@Override
-	public List<RecipeListResponse> getMyRecipes(Long id) {
+	public List<RecipeListResponse> getMyRecipes(String id) {
 		List<Recipe> recipes = recipeRepository.findRecipesByMemberId(id);
 		List<RecipeListResponse> responses = new ArrayList<>();
 		for(Recipe recipe : recipes) {

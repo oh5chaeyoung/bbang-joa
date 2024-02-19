@@ -36,8 +36,7 @@ public class RecipeController {
 			@RequestPart(value = "file", required = false) List<MultipartFile> file,
 			@RequestPart RecipeRegisterRequest request,
 			@AuthenticationPrincipal User user) {
-		Long memberId = Long.parseLong(user.getUsername());
-		return ResponseEntity.status(HttpStatus.OK).body(recipeService.addRecipe(request, file, memberId));
+		return ResponseEntity.status(HttpStatus.OK).body(recipeService.addRecipe(request, file, user.getUsername()));
 	}
 	@PutMapping("/{recipeId}")
 	public ResponseEntity<RecipeRegisterRequest> recipeModify(

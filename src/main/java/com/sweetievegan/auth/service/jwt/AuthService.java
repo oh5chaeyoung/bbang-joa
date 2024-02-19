@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -35,6 +37,7 @@ public class AuthService {
 		}
 
 		Member member = request.toMember(passwordEncoder);
+		member.setId(createMemberId());
 		member.setProfile(imageService.addOneFile(file, "member"));
 		return MemberResponse.of(memberRepository.save(member));
 	}
@@ -45,4 +48,8 @@ public class AuthService {
 		return tokenProvider.generateTokenDto(authentication);
 	}
 
+	public String createMemberId() {
+		UUID uuid = UUID.randomUUID();
+		return "user_" + uuid.toString().replace("-", "");
+	}
 }
