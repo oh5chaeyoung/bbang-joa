@@ -12,5 +12,5 @@ public interface BlogService {
 	BlogDetailResponse findBlogByBlogId(Long blogId);
 	Long addBlog(BlogRegisterRequest request, List<MultipartFile> file, String memberId);
 	BlogDetailResponse updateBlogDetail(String memberId, Long blogId, BlogRegisterRequest request, List<MultipartFile> file);
-	Long removeBlog(Long blogId);
+	Long removeBlog(String memberId, Long blogId);
 }

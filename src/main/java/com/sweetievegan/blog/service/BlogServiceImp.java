@@ -139,8 +139,16 @@ public class BlogServiceImp implements BlogService {
 	}
 
 	@Override
-	public Long removeBlog(Long blogId) {
-		/* implement to remove image */
+	public Long removeBlog(String memberId, Long blogId) {
+		Blog blog = blogRepository.findBlogById(blogId);
+		if(!memberId.equals(blog.getMember().getId())) {
+			throw new RuntimeException("게시글 삭제 권한이 없습니다.");
+		}
+		List<BlogImage> removeBlogImagesList = blog.getBlogImages();
+		for(BlogImage blogImage : removeBlogImagesList) {
+			imageService.removeFile(blogImage.getImageName());
+			blogImageRepository.delete(blogImage);
+		}
 
 		blogRepository.deleteById(blogId);
 		return blogId;
