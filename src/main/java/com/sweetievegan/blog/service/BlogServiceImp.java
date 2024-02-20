@@ -9,6 +9,8 @@ import com.sweetievegan.blog.domain.repository.BlogRepository;
 import com.sweetievegan.blog.dto.request.BlogRegisterRequest;
 import com.sweetievegan.blog.dto.response.BlogDetailResponse;
 import com.sweetievegan.blog.dto.response.BlogListResponse;
+import com.sweetievegan.util.exception.GlobalErrorCode;
+import com.sweetievegan.util.exception.GlobalException;
 import com.sweetievegan.util.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +62,9 @@ public class BlogServiceImp implements BlogService {
 	@Override
 	public BlogDetailResponse findBlogByBlogId(Long blogId) {
 		Blog blog = blogRepository.findBlogById(blogId);
+		if(blog == null) {
+			throw new GlobalException(GlobalErrorCode.NOT_FOUND_INFO);
+		}
 		BlogDetailResponse response = BlogDetailResponse.builder()
 				.id(blog.getId())
 				.title(blog.getTitle())
@@ -111,8 +116,11 @@ public class BlogServiceImp implements BlogService {
 	@Override
 	public BlogDetailResponse updateBlogDetail(String memberId, Long blogId, BlogRegisterRequest request, List<MultipartFile> file) {
 		Blog blog = blogRepository.findBlogById(blogId);
+		if(blog == null) {
+			throw new GlobalException(GlobalErrorCode.NOT_FOUND_INFO);
+		}
 		if(!memberId.equals(blog.getMember().getId())) {
-			throw new RuntimeException("게시글 수정 권한이 없습니다.");
+			throw new GlobalException(GlobalErrorCode.NOT_AUTHORIZED_USER);
 		}
 		blog.editBlog(request);
 
@@ -141,8 +149,11 @@ public class BlogServiceImp implements BlogService {
 	@Override
 	public Long removeBlog(String memberId, Long blogId) {
 		Blog blog = blogRepository.findBlogById(blogId);
+		if(blog == null) {
+			throw new GlobalException(GlobalErrorCode.NOT_FOUND_INFO);
+		}
 		if(!memberId.equals(blog.getMember().getId())) {
-			throw new RuntimeException("게시글 삭제 권한이 없습니다.");
+			throw new GlobalException(GlobalErrorCode.NOT_AUTHORIZED_USER);
 		}
 		List<BlogImage> removeBlogImagesList = blog.getBlogImages();
 		for(BlogImage blogImage : removeBlogImagesList) {

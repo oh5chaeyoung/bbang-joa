@@ -12,6 +12,8 @@ import com.sweetievegan.recipe.domain.entity.Recipe;
 import com.sweetievegan.recipe.domain.entity.RecipeImage;
 import com.sweetievegan.recipe.domain.repository.RecipeRepository;
 import com.sweetievegan.recipe.dto.response.RecipeListResponse;
+import com.sweetievegan.util.exception.GlobalErrorCode;
+import com.sweetievegan.util.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,16 +36,16 @@ public class MemberServiceImp implements MemberService {
 
 	public MemberResponse changeMemberNickname(String email, String nickname){
 		Member member = memberRepository.findByEmail(email)
-				.orElseThrow(() -> new RuntimeException("로그인 유정 정보가 없습니다."));
+				.orElseThrow(() -> new GlobalException(GlobalErrorCode.NOT_FOUND_USER));
 		member.setNickname(nickname);
 		return MemberResponse.of(memberRepository.save(member));
 	}
 
 	public MemberResponse changeMemberPassword(String exPassword, String newPassword){
 		Member member = memberRepository.findById(SecurityUtil.getCurrentMemberId())
-				.orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
+				.orElseThrow(() -> new GlobalException(GlobalErrorCode.NOT_FOUND_USER));
 		if(!passwordEncoder.matches(exPassword, member.getPassword())){
-			throw new RuntimeException("비밀번호가 맞지 않습니다.");
+			throw new GlobalException(GlobalErrorCode.NOT_MATCH_PASSWORD);
 		}
 		member.setPassword(passwordEncoder.encode((newPassword)));
 		return MemberResponse.of(memberRepository.save(member));
@@ -52,7 +54,7 @@ public class MemberServiceImp implements MemberService {
 	public Member getMemberDetail(String id) {
 		Member member = memberRepository.findMemberById(id);
 		if (member == null) {
-			throw new RuntimeException("로그인 유저 정보가 없습니다.");
+			throw new GlobalException(GlobalErrorCode.NOT_FOUND_USER);
 		}
 		return member;
 	}
@@ -60,7 +62,7 @@ public class MemberServiceImp implements MemberService {
 	public String checkEmail(String email) {
 		boolean exist = memberRepository.existsByEmail(email);
 		if(exist) {
-			throw new RuntimeException("이미 가입된 이메일 입니다.");
+			throw new GlobalException(GlobalErrorCode.EXIST_EMAIL);
 		}
 		return "가입할 수 있는 이메일 입니다.";
 	}
