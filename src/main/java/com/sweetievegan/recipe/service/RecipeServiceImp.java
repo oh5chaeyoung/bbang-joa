@@ -2,7 +2,6 @@ package com.sweetievegan.recipe.service;
 
 import com.sweetievegan.auth.domain.entity.Member;
 import com.sweetievegan.auth.service.MemberServiceImp;
-import com.sweetievegan.blog.domain.entity.Blog;
 import com.sweetievegan.recipe.domain.entity.Recipe;
 import com.sweetievegan.recipe.domain.entity.RecipeImage;
 import com.sweetievegan.recipe.domain.repository.RecipeImageRepository;
@@ -10,6 +9,8 @@ import com.sweetievegan.recipe.domain.repository.RecipeRepository;
 import com.sweetievegan.recipe.dto.response.RecipeDetailResponse;
 import com.sweetievegan.recipe.dto.response.RecipeListResponse;
 import com.sweetievegan.recipe.dto.request.RecipeRegisterRequest;
+import com.sweetievegan.util.exception.GlobalErrorCode;
+import com.sweetievegan.util.exception.GlobalException;
 import com.sweetievegan.util.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +61,9 @@ public class RecipeServiceImp implements RecipeService {
 	@Override
 	public RecipeDetailResponse findRecipeByRecipeId(Long recipeId) {
 		Recipe recipe = recipeRepository.findRecipeById(recipeId);
+		if(recipe == null) {
+			throw new GlobalException(GlobalErrorCode.NOT_FOUND_INFO);
+		}
 		RecipeDetailResponse response = RecipeDetailResponse.builder()
 				.title(recipe.getTitle())
 				.author(recipe.getMember().getNickname())
@@ -115,8 +119,11 @@ public class RecipeServiceImp implements RecipeService {
 	@Override
 	public RecipeDetailResponse updateRecipeDetail(String memberId, Long recipeId, RecipeRegisterRequest request, List<MultipartFile> file) {
 		Recipe recipe = recipeRepository.findRecipeById(recipeId);
+		if(recipe == null) {
+			throw new GlobalException(GlobalErrorCode.NOT_FOUND_INFO);
+		}
 		if(!memberId.equals(recipe.getMember().getId())) {
-			throw new RuntimeException("게시글 수정 권한이 없습니다.");
+			throw new GlobalException(GlobalErrorCode.NOT_AUTHORIZED_USER);
 		}
 		recipe.editRecipe(request);
 
@@ -144,8 +151,11 @@ public class RecipeServiceImp implements RecipeService {
 	@Override
 	public Long removeRecipe(String memberId, Long recipeId) {
 		Recipe recipe = recipeRepository.findRecipeById(recipeId);
+		if(recipe == null) {
+			throw new GlobalException(GlobalErrorCode.NOT_FOUND_INFO);
+		}
 		if(!memberId.equals(recipe.getMember().getId())) {
-			throw new RuntimeException("게시글 삭제 권한이 없습니다.");
+			throw new GlobalException(GlobalErrorCode.NOT_AUTHORIZED_USER);
 		}
 		List<RecipeImage> removeRecipeImageList = recipeImageRepository.findRecipeImageByRecipeId(recipeId);
 		for(RecipeImage recipeImage : removeRecipeImageList) {

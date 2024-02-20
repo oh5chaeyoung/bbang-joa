@@ -1,5 +1,7 @@
 package com.sweetievegan.config;
 
+import com.sweetievegan.util.exception.GlobalErrorCode;
+import com.sweetievegan.util.exception.GlobalException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,15 +11,13 @@ public class SecurityUtil {
 
 	private SecurityUtil() { }
 
-	public static Long getCurrentMemberId() {
+	public static String getCurrentMemberId() {
 		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-		log.info("{}", authentication);
-
 		if (authentication == null || authentication.getName() == null) {
-			throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
+			throw new GlobalException(GlobalErrorCode.NOT_FOUND_EXCEPTION);
 		}
 
-		return Long.parseLong(authentication.getName());
+		return authentication.getName();
 	}
 }

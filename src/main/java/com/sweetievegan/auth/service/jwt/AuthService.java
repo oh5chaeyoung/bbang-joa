@@ -7,6 +7,8 @@ import com.sweetievegan.auth.dto.request.MemberRegisterRequest;
 import com.sweetievegan.auth.dto.response.MemberResponse;
 import com.sweetievegan.auth.jwt.TokenDto;
 import com.sweetievegan.auth.jwt.TokenProvider;
+import com.sweetievegan.util.exception.GlobalErrorCode;
+import com.sweetievegan.util.exception.GlobalException;
 import com.sweetievegan.util.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +35,7 @@ public class AuthService {
 
 	public MemberResponse signup(MemberRegisterRequest request, MultipartFile file) {
 		if (memberRepository.existsByEmail(request.getEmail())) {
-			throw new RuntimeException("이미 가입되어 있는 유저입니다");
+			throw new GlobalException(GlobalErrorCode.EXIST_EMAIL);
 		}
 
 		/* nickname ****************************/
@@ -61,8 +63,7 @@ public class AuthService {
 
 	public String generateSevenDigitRandomNumber() {
 		int randomNumber = (int) (Math.random() * 10000000);
-		String randomString = String.format("%07d", randomNumber);
-		return randomString;
+		return String.format("%07d", randomNumber);
 	}
 
 }
