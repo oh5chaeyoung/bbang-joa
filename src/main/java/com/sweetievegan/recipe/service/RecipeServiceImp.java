@@ -2,6 +2,7 @@ package com.sweetievegan.recipe.service;
 
 import com.sweetievegan.auth.domain.entity.Member;
 import com.sweetievegan.auth.service.MemberServiceImp;
+import com.sweetievegan.blog.domain.entity.Blog;
 import com.sweetievegan.recipe.domain.entity.Recipe;
 import com.sweetievegan.recipe.domain.entity.RecipeImage;
 import com.sweetievegan.recipe.domain.repository.RecipeImageRepository;
@@ -114,6 +115,9 @@ public class RecipeServiceImp implements RecipeService {
 	@Override
 	public RecipeDetailResponse updateRecipeDetail(String memberId, Long recipeId, RecipeRegisterRequest request, List<MultipartFile> file) {
 		Recipe recipe = recipeRepository.findRecipeById(recipeId);
+		if(!memberId.equals(recipe.getMember().getId())) {
+			throw new RuntimeException("게시글 수정 권한이 없습니다.");
+		}
 		recipe.editRecipe(request);
 
 		/* Image files ****************************/
@@ -138,7 +142,17 @@ public class RecipeServiceImp implements RecipeService {
 		return findRecipeByRecipeId(recipeId);
 	}
 	@Override
-	public Long removeRecipe(Long recipeId) {
+	public Long removeRecipe(String memberId, Long recipeId) {
+		Recipe recipe = recipeRepository.findRecipeById(recipeId);
+		if(!memberId.equals(recipe.getMember().getId())) {
+			throw new RuntimeException("게시글 삭제 권한이 없습니다.");
+		}
+		List<RecipeImage> removeRecipeImageList = recipeImageRepository.findRecipeImageByRecipeId(recipeId);
+		for(RecipeImage recipeImage : removeRecipeImageList) {
+			imageService.removeFile(recipeImage.getImageName());
+			recipeImageRepository.delete(recipeImage);
+		}
+
 		recipeRepository.deleteById(recipeId);
 		return recipeId;
 	}

@@ -47,7 +47,9 @@ public class RecipeController {
 		return ResponseEntity.status(HttpStatus.OK).body(recipeService.updateRecipeDetail(user.getUsername(), recipeId, request, file));
 	}
 	@DeleteMapping("/{recipeId}")
-	public ResponseEntity<Long> recipeRemove(@PathVariable("recipeId") Long recipeId) {
-		return ResponseEntity.status(HttpStatus.OK).body(recipeService.removeRecipe(recipeId));
+	public ResponseEntity<Long> recipeRemove(
+			@PathVariable("recipeId") Long recipeId,
+			@AuthenticationPrincipal User user) {
+		return ResponseEntity.status(HttpStatus.OK).body(recipeService.removeRecipe(user.getUsername(), recipeId));
 	}
 }

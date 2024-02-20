@@ -53,7 +53,9 @@ public class BlogController {
 	}
 
 	@DeleteMapping("/{blogId}")
-	public ResponseEntity<Long> blogRemove(@PathVariable("blogId") Long blogId) {
-		return ResponseEntity.status(HttpStatus.OK).body(blogService.removeBlog(blogId));
+	public ResponseEntity<Long> blogRemove(
+			@PathVariable("blogId") Long blogId,
+			@AuthenticationPrincipal User user) {
+		return ResponseEntity.status(HttpStatus.OK).body(blogService.removeBlog(user.getUsername(), blogId));
 	}
 }
