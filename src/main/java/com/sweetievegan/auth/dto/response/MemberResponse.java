@@ -1,6 +1,7 @@
 package com.sweetievegan.auth.dto.response;
 
 import com.sweetievegan.auth.domain.entity.Member;
+import com.sweetievegan.auth.util.Authority;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +18,7 @@ public class MemberResponse {
 	private String firstname;
 	private String lastname;
 	private String profile;
+	private Authority authority;
 
 	public static MemberResponse of(Member member) {
 		return MemberResponse.builder()
@@ -26,6 +28,7 @@ public class MemberResponse {
 				.firstname(member.getFirstname())
 				.lastname(member.getLastname())
 				.profile(member.getProfile())
+				.authority(member.getAuthority())
 				.build();
 	}
 }
