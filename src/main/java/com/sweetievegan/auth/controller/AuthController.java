@@ -6,11 +6,12 @@ import com.sweetievegan.auth.dto.response.MemberResponse;
 import com.sweetievegan.auth.jwt.TokenDto;
 import com.sweetievegan.auth.service.jwt.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -18,9 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 	private final AuthService authService;
 
-	@PostMapping("/signup")
-	public ResponseEntity<MemberResponse> signup(@RequestBody MemberRegisterRequest requestDto) {
-		return ResponseEntity.ok(authService.signup(requestDto));
+	@PostMapping(value = "/signup",
+			consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<MemberResponse> signup(
+			@RequestPart(value = "file", required = false) MultipartFile file,
+			@RequestPart MemberRegisterRequest request) {
+		return ResponseEntity.ok(authService.signup(request, file));
 	}
 
 	@PostMapping("/login")

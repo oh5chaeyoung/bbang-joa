@@ -22,7 +22,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		log.debug("{}", username);
 		return memberRepository.findByEmail(username)
 				.map(this::createUserDetails)
 				.orElseThrow(() -> new UsernameNotFoundException(username + " 을 DB에서 찾을 수 없습니다"));
@@ -30,8 +29,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	private UserDetails createUserDetails(Member member) {
 		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(member.getAuthority().toString());
-
-		log.info("{}","권한주기", grantedAuthority);
 
 		return new User(
 				String.valueOf(member.getId()),

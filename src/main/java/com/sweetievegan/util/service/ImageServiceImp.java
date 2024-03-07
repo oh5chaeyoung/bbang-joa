@@ -1,4 +1,4 @@
-package com.sweetievegan.blog.service;
+package com.sweetievegan.util.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -22,35 +22,41 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class BlogImageServiceImp implements BlogImageService {
+public class ImageServiceImp implements ImageService {
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
 	private final AmazonS3 amazonS3;
 
+	public String addOneFile(MultipartFile file, String dirName) {
+		String fileName = createFileName(file.getOriginalFilename(), dirName);
+		ObjectMetadata objectMetadata = new ObjectMetadata();
+		objectMetadata.setContentLength(file.getSize());
+		objectMetadata.setContentType(file.getContentType());
+
+		try (InputStream inputStream = file.getInputStream()) {
+			amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+					.withCannedAcl(CannedAccessControlList.PublicRead));
+		} catch (IOException e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+		}
+
+		return amazonS3.getUrl(bucket, fileName).toString();
+	}
+
 	public List<String> addFile(List<MultipartFile> multipartFile, String dirName) {
 		List<String> fileNameList = new ArrayList<>();
 
-		// forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
-		multipartFile.forEach(file -> {
-			String fileName = createFileName(file.getOriginalFilename(), dirName);
-			ObjectMetadata objectMetadata = new ObjectMetadata();
-			objectMetadata.setContentLength(file.getSize());
-			objectMetadata.setContentType(file.getContentType());
-
-			try (InputStream inputStream = file.getInputStream()) {
-				amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
-						.withCannedAcl(CannedAccessControlList.PublicRead));
-			} catch (IOException e) {
-				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
-			}
-
-			fileNameList.add("https://bbangjoa-bucket.s3.ap-northeast-2.amazonaws.com/"+fileName);
-		});
+		for(MultipartFile file : multipartFile) {
+			String result = addOneFile(file, dirName);
+			fileNameList.add(result);
+		}
 
 		return fileNameList;
 	}
 
-	public void removeFile(String fileName) {
+	public void removeFile(String fileUrl) {
+		String splitStr = ".com/";
+		String fileName = fileUrl.substring(fileUrl.lastIndexOf(splitStr) + splitStr.length());
 		amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
 	}
 

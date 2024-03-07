@@ -7,7 +7,6 @@ import lombok.Data;
 @Builder
 public class RecipeRegisterRequest {
 	private String title;
-	private String author;
 	private String duration;
 	private Long level;
 	private String description;

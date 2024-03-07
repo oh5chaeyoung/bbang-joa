@@ -1,5 +1,7 @@
 package com.sweetievegan.recipe.service;
 
+import com.sweetievegan.auth.domain.entity.Member;
+import com.sweetievegan.auth.service.MemberServiceImp;
 import com.sweetievegan.recipe.domain.entity.Recipe;
 import com.sweetievegan.recipe.domain.entity.RecipeImage;
 import com.sweetievegan.recipe.domain.repository.RecipeImageRepository;
@@ -7,6 +9,9 @@ import com.sweetievegan.recipe.domain.repository.RecipeRepository;
 import com.sweetievegan.recipe.dto.response.RecipeDetailResponse;
 import com.sweetievegan.recipe.dto.response.RecipeListResponse;
 import com.sweetievegan.recipe.dto.request.RecipeRegisterRequest;
+import com.sweetievegan.util.exception.GlobalErrorCode;
+import com.sweetievegan.util.exception.GlobalException;
+import com.sweetievegan.util.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,8 +27,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class RecipeServiceImp implements RecipeService {
+	private final MemberServiceImp memberServiceImp;
 	private final RecipeRepository recipeRepository;
-	private final RecipeImageService recipeImageService;
+	private final ImageService imageService;
 	private final RecipeImageRepository recipeImageRepository;
 
 	@Override
@@ -55,9 +61,12 @@ public class RecipeServiceImp implements RecipeService {
 	@Override
 	public RecipeDetailResponse findRecipeByRecipeId(Long recipeId) {
 		Recipe recipe = recipeRepository.findRecipeById(recipeId);
+		if(recipe == null) {
+			throw new GlobalException(GlobalErrorCode.NOT_FOUND_INFO);
+		}
 		RecipeDetailResponse response = RecipeDetailResponse.builder()
 				.title(recipe.getTitle())
-				.author(recipe.getAuthor())
+				.author(recipe.getMember().getNickname())
 				.duration(recipe.getDuration())
 				.level(recipe.getLevel())
 				.description(recipe.getDescription())
@@ -79,10 +88,12 @@ public class RecipeServiceImp implements RecipeService {
 		return response;
 	}
 	@Override
-	public Long addRecipe(RecipeRegisterRequest request, List<MultipartFile> file) {
+	public Long addRecipe(RecipeRegisterRequest request, List<MultipartFile> file, String memberId) {
+		Member member = memberServiceImp.getMemberDetail(memberId);
+
 		Recipe recipe = Recipe.builder()
 				.title(request.getTitle())
-				.author(request.getAuthor())
+				.member(member)
 				.duration(request.getDuration())
 				.level(request.getLevel())
 				.description(request.getDescription())
@@ -93,33 +104,39 @@ public class RecipeServiceImp implements RecipeService {
 				.build();
 
 		/* Image files ****************************/
-		List<String> recipeImageList = recipeImageService.addFile(file, "recipe");
+		List<String> recipeImageList = imageService.addFile(file, "recipe");
 		for(String fn : recipeImageList) {
 			recipeImageRepository.save(RecipeImage.builder()
 					.imageName(fn)
 					.recipe(recipe)
 					.isDeleted(false)
 					.build());
-		}
-		for (String recipeImagePath : recipeImageList) {
-			recipe.addRecipeImage(new RecipeImage(recipeImagePath));
 		}
 		/* Image files */
 
 		return recipeRepository.save(recipe).getId();
 	}
 	@Override
-	public RecipeRegisterRequest updateRecipeDetail(Long recipeId, RecipeRegisterRequest request, List<MultipartFile> file) {
+	public RecipeDetailResponse updateRecipeDetail(String memberId, Long recipeId, RecipeRegisterRequest request, List<MultipartFile> file) {
 		Recipe recipe = recipeRepository.findRecipeById(recipeId);
+		if(recipe == null) {
+			throw new GlobalException(GlobalErrorCode.NOT_FOUND_INFO);
+		}
+		if(!memberId.equals(recipe.getMember().getId())) {
+			throw new GlobalException(GlobalErrorCode.NOT_AUTHORIZED_USER);
+		}
 		recipe.editRecipe(request);
 
 		/* Image files ****************************/
-		List<RecipeImage> deleteRecipeImageList = recipeImageRepository.findRecipeImageByRecipeId(recipeId);
-		for(RecipeImage d : deleteRecipeImageList) {
-			recipeImageRepository.delete(d);
+		/* remove */
+		List<RecipeImage> removeRecipeImageList = recipeImageRepository.findRecipeImageByRecipeId(recipeId);
+		for(RecipeImage recipeImage : removeRecipeImageList) {
+			imageService.removeFile(recipeImage.getImageName());
+			recipeImageRepository.delete(recipeImage);
 		}
 
-		List<String> recipeImageList = recipeImageService.addFile(file, "recipe");
+		/* add */
+		List<String> recipeImageList = imageService.addFile(file, "recipe");
 		for(String fn : recipeImageList) {
 			recipeImageRepository.save(RecipeImage.builder()
 					.imageName(fn)
@@ -127,15 +144,25 @@ public class RecipeServiceImp implements RecipeService {
 					.isDeleted(false)
 					.build());
 		}
-		for (String recipeImagePath : recipeImageList) {
-			recipe.addRecipeImage(new RecipeImage(recipeImagePath));
-		}
 		/* Image files */
 
-		return request;
+		return findRecipeByRecipeId(recipeId);
 	}
 	@Override
-	public Long removeRecipe(Long recipeId) {
+	public Long removeRecipe(String memberId, Long recipeId) {
+		Recipe recipe = recipeRepository.findRecipeById(recipeId);
+		if(recipe == null) {
+			throw new GlobalException(GlobalErrorCode.NOT_FOUND_INFO);
+		}
+		if(!memberId.equals(recipe.getMember().getId())) {
+			throw new GlobalException(GlobalErrorCode.NOT_AUTHORIZED_USER);
+		}
+		List<RecipeImage> removeRecipeImageList = recipeImageRepository.findRecipeImageByRecipeId(recipeId);
+		for(RecipeImage recipeImage : removeRecipeImageList) {
+			imageService.removeFile(recipeImage.getImageName());
+			recipeImageRepository.delete(recipeImage);
+		}
+
 		recipeRepository.deleteById(recipeId);
 		return recipeId;
 	}

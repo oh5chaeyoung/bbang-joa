@@ -36,22 +36,20 @@ public class RecipeController {
 			@RequestPart(value = "file", required = false) List<MultipartFile> file,
 			@RequestPart RecipeRegisterRequest request,
 			@AuthenticationPrincipal User user) {
-		log.info("{}", user);
-		/* auth 서버 : access token -> memberId */
-//		return ResponseEntity.status(HttpStatus.OK).body(productService.addProduct(memberId, request, file));
-		return ResponseEntity.status(HttpStatus.OK).body(recipeService.addRecipe(request, file));
+		return ResponseEntity.status(HttpStatus.OK).body(recipeService.addRecipe(request, file, user.getUsername()));
 	}
 	@PutMapping("/{recipeId}")
-	public ResponseEntity<RecipeRegisterRequest> recipeModify(
+	public ResponseEntity<RecipeDetailResponse> recipeModify(
 			@PathVariable("recipeId") Long recipeId,
 			@RequestPart(value = "file", required = false) List<MultipartFile> file,
 			@RequestPart RecipeRegisterRequest request,
 			@AuthenticationPrincipal User user) {
-		/* Check User */
-		return ResponseEntity.status(HttpStatus.OK).body(recipeService.updateRecipeDetail(recipeId, request, file));
+		return ResponseEntity.status(HttpStatus.OK).body(recipeService.updateRecipeDetail(user.getUsername(), recipeId, request, file));
 	}
 	@DeleteMapping("/{recipeId}")
-	public ResponseEntity<Long> recipeRemove(@PathVariable("recipeId") Long recipeId) {
-		return ResponseEntity.status(HttpStatus.OK).body(recipeService.removeRecipe(recipeId));
+	public ResponseEntity<Long> recipeRemove(
+			@PathVariable("recipeId") Long recipeId,
+			@AuthenticationPrincipal User user) {
+		return ResponseEntity.status(HttpStatus.OK).body(recipeService.removeRecipe(user.getUsername(), recipeId));
 	}
 }

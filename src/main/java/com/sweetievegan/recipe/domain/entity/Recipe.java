@@ -1,6 +1,8 @@
 package com.sweetievegan.recipe.domain.entity;
 
+import com.sweetievegan.auth.domain.entity.Member;
 import com.sweetievegan.recipe.dto.request.RecipeRegisterRequest;
+import com.sweetievegan.util.domain.entity.BaseTime;
 import lombok.*;
 import javax.persistence.*;
 import java.util.List;
@@ -18,13 +20,16 @@ public class Recipe extends BaseTime {
 	private Long id;
 
 	private String title;
-	private String author;
 	private String duration;
 	private Long level;
 	private String description;
 	private String ingredients;
 	private String notes;
 	private String steps;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id")
+	private Member member;
 
 	@OneToMany(mappedBy = "recipe")
 	private List<RecipeImage> recipeImages;

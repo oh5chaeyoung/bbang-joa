@@ -1,7 +1,8 @@
 package com.sweetievegan.blog.domain.entity;
 
+import com.sweetievegan.auth.domain.entity.Member;
 import com.sweetievegan.blog.dto.request.BlogRegisterRequest;
-import com.sweetievegan.recipe.domain.entity.BaseTime;
+import com.sweetievegan.util.domain.entity.BaseTime;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,21 +21,21 @@ public class Blog extends BaseTime {
 	private Long id;
 
 	private String title;
-	private String author;
 	private String content;
 	private String tags;
+	private String summary;
 
 	@OneToMany(mappedBy = "blog")
 	private List<BlogImage> blogImages;
 
-	public void addBlogImage(final BlogImage blogImage) {
-		blogImages.add(blogImage);
-		blogImage.setBlog(this);
-	}
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id")
+	private Member member;
 
 	public void editBlog(BlogRegisterRequest request) {
 		this.title = request.getTitle();
 		this.content = request.getContent();
 		this.tags = request.getTags();
+		this.summary = request.getSummary();
 	}
 }

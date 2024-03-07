@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class BlogRegisterRequest {
 	private String title;
-	private String author;
 	private String content;
 	private String tags;
+	private String summary;
 }

@@ -16,12 +16,16 @@ public class MemberRegisterRequest {
 	private String email;
 	private String password;
 	private String nickname;
+	private String firstname;
+	private String lastname;
 
 	public Member toMember(PasswordEncoder passwordEncoder) {
 		return Member.builder()
 				.email(email)
 				.password(passwordEncoder.encode(password))
 				.nickname(nickname)
+				.firstname(firstname)
+				.lastname(lastname)
 				.authority(Authority.ROLE_USER)
 				.isDeleted(false).build();
 	}

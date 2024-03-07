@@ -1,5 +1,6 @@
 package com.sweetievegan.blog.controller;
 
+import com.sweetievegan.auth.service.MemberServiceImp;
 import com.sweetievegan.blog.dto.request.BlogRegisterRequest;
 import com.sweetievegan.blog.dto.response.BlogDetailResponse;
 import com.sweetievegan.blog.dto.response.BlogListResponse;
@@ -9,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +22,7 @@ import java.util.List;
 @RequestMapping("/blogs")
 @RequiredArgsConstructor
 public class BlogController {
+	private final MemberServiceImp memberServiceImp;
 	private final BlogService blogService;
 
 	@GetMapping("")
@@ -34,20 +38,24 @@ public class BlogController {
 	@PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Long> blogAdd(
 			@RequestPart(value = "file", required = false) List<MultipartFile> file,
-			@RequestPart BlogRegisterRequest request) {
-
-		return ResponseEntity.status(HttpStatus.OK).body(blogService.addBlog(request, file));
+			@RequestPart BlogRegisterRequest request,
+			@AuthenticationPrincipal User user) {
+		return ResponseEntity.status(HttpStatus.OK).body(blogService.addBlog(request, file, user.getUsername()));
 	}
 
-	@PutMapping("/{blogId}")
-	public ResponseEntity<BlogRegisterRequest> blogModify(
+	@PutMapping(value = "/{blogId}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<BlogDetailResponse> blogModify(
 			@PathVariable("blogId") Long blogId,
-			@RequestBody BlogRegisterRequest request) {
-		return ResponseEntity.status(HttpStatus.OK).body(blogService.updateBlogDetail(blogId, request));
+			@RequestPart(value = "file", required = false) List<MultipartFile> file,
+			@RequestPart BlogRegisterRequest request,
+			@AuthenticationPrincipal User user) {
+		return ResponseEntity.status(HttpStatus.OK).body(blogService.updateBlogDetail(user.getUsername(), blogId, request, file));
 	}
 
 	@DeleteMapping("/{blogId}")
-	public ResponseEntity<Long> blogRemove(@PathVariable("blogId") Long blogId) {
-		return ResponseEntity.status(HttpStatus.OK).body(blogService.removeBlog(blogId));
+	public ResponseEntity<Long> blogRemove(
+			@PathVariable("blogId") Long blogId,
+			@AuthenticationPrincipal User user) {
+		return ResponseEntity.status(HttpStatus.OK).body(blogService.removeBlog(user.getUsername(), blogId));
 	}
 }
