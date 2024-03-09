@@ -67,6 +67,7 @@ public class RecipeServiceImp implements RecipeService {
 		RecipeDetailResponse response = RecipeDetailResponse.builder()
 				.title(recipe.getTitle())
 				.author(recipe.getMember().getNickname())
+				.authorSummary(recipe.getMember().getSummary())
 				.duration(recipe.getDuration())
 				.level(recipe.getLevel())
 				.description(recipe.getDescription())
