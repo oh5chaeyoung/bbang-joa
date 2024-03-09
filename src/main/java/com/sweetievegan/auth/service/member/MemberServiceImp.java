@@ -7,7 +7,6 @@ import com.sweetievegan.blog.domain.entity.Blog;
 import com.sweetievegan.blog.domain.entity.BlogImage;
 import com.sweetievegan.blog.domain.repository.BlogRepository;
 import com.sweetievegan.blog.dto.response.BlogListResponse;
-import com.sweetievegan.config.SecurityUtil;
 import com.sweetievegan.recipe.domain.entity.Recipe;
 import com.sweetievegan.recipe.domain.entity.RecipeImage;
 import com.sweetievegan.recipe.domain.repository.RecipeRepository;
@@ -37,15 +36,15 @@ public class MemberServiceImp implements MemberService {
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final ImageService imageService;
 
-	public MemberResponse changeMemberNickname(String email, String nickname){
-		Member member = memberRepository.findByEmail(email)
+	public MemberResponse changeMemberNickname(String memberId, String nickname){
+		Member member = memberRepository.findById(memberId)
 				.orElseThrow(() -> new GlobalException(GlobalErrorCode.NOT_FOUND_USER));
 		member.setNickname(nickname);
 		return MemberResponse.of(memberRepository.save(member));
 	}
 
-	public MemberResponse changeMemberPassword(String exPassword, String newPassword){
-		Member member = memberRepository.findById(SecurityUtil.getCurrentMemberId())
+	public MemberResponse changeMemberPassword(String memberId, String exPassword, String newPassword){
+		Member member = memberRepository.findById(memberId)
 				.orElseThrow(() -> new GlobalException(GlobalErrorCode.NOT_FOUND_USER));
 		if(!passwordEncoder.matches(exPassword, member.getPassword())){
 			throw new GlobalException(GlobalErrorCode.NOT_MATCH_PASSWORD);
@@ -55,16 +54,16 @@ public class MemberServiceImp implements MemberService {
 	}
 
 	@Override
-	public MemberResponse changeMemberSummary(String id, String summary) {
-		Member member = memberRepository.findById(id)
+	public MemberResponse changeMemberSummary(String memberId, String summary) {
+		Member member = memberRepository.findById(memberId)
 				.orElseThrow(() -> new GlobalException(GlobalErrorCode.NOT_FOUND_USER));
 		member.setSummary(summary);
 		return MemberResponse.of(memberRepository.save(member));
 	}
 
 	@Override
-	public MemberResponse changeMemberProfile(String id, MultipartFile file) {
-		Member member = memberRepository.findById(id)
+	public MemberResponse changeMemberProfile(String memberId, MultipartFile file) {
+		Member member = memberRepository.findById(memberId)
 				.orElseThrow(() -> new GlobalException(GlobalErrorCode.NOT_FOUND_USER));
 		/* remove */
 		imageService.removeFile(member.getProfile());
@@ -74,8 +73,8 @@ public class MemberServiceImp implements MemberService {
 		return MemberResponse.of(memberRepository.save(member));
 	}
 
-	public MemberResponse getMemberDetail(String id) {
-		Member member = memberRepository.findMemberById(id);
+	public MemberResponse getMemberDetail(String memberId) {
+		Member member = memberRepository.findMemberById(memberId);
 		if (member == null) {
 			throw new GlobalException(GlobalErrorCode.NOT_FOUND_USER);
 		}
@@ -91,8 +90,8 @@ public class MemberServiceImp implements MemberService {
 	}
 
 	@Override
-	public List<BlogListResponse> getMyBlogs(String id) {
-		List<Blog> blogs = blogRepository.findBlogsByMemberId(id);
+	public List<BlogListResponse> getMyBlogs(String memberId) {
+		List<Blog> blogs = blogRepository.findBlogsByMemberId(memberId);
 		List<BlogListResponse> responses = new ArrayList<>();
 		for(Blog blog : blogs) {
 			BlogListResponse response = BlogListResponse.builder()
@@ -118,8 +117,8 @@ public class MemberServiceImp implements MemberService {
 	}
 
 	@Override
-	public List<RecipeListResponse> getMyRecipes(String id) {
-		List<Recipe> recipes = recipeRepository.findRecipesByMemberId(id);
+	public List<RecipeListResponse> getMyRecipes(String memberId) {
+		List<Recipe> recipes = recipeRepository.findRecipesByMemberId(memberId);
 		List<RecipeListResponse> responses = new ArrayList<>();
 		for(Recipe recipe : recipes) {
 			RecipeListResponse response = RecipeListResponse.builder()
