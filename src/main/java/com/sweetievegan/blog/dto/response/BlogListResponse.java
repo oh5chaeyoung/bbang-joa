@@ -15,4 +15,5 @@ public class BlogListResponse {
 	private List<String> imageNames;
 	private String tag;
 	private LocalDateTime createDate;
+	private String summary;
 }

@@ -16,7 +16,6 @@ public class BlogDetailResponse {
 	private String author;
 	private String content;
 	private String tags;
-	private String summary;
 	private List<String> imageNames;
 
 	public static BlogDetailResponse of(Blog blog) {
@@ -26,7 +25,6 @@ public class BlogDetailResponse {
 										.author(blog.getMember().getNickname())
 										.content(blog.getContent())
 										.tags(blog.getTags())
-										.summary(blog.getSummary())
 										.build();
 
 		if(!blog.getBlogImages().isEmpty()) {

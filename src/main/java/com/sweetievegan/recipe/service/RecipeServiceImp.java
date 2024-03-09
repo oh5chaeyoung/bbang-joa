@@ -1,7 +1,7 @@
 package com.sweetievegan.recipe.service;
 
 import com.sweetievegan.auth.domain.entity.Member;
-import com.sweetievegan.auth.service.MemberServiceImp;
+import com.sweetievegan.auth.service.member.MemberServiceImp;
 import com.sweetievegan.recipe.domain.entity.Recipe;
 import com.sweetievegan.recipe.domain.entity.RecipeImage;
 import com.sweetievegan.recipe.domain.repository.RecipeImageRepository;
