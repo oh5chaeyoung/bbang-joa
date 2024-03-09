@@ -1,7 +1,7 @@
 package com.sweetievegan.blog.service;
 
 import com.sweetievegan.auth.domain.entity.Member;
-import com.sweetievegan.auth.service.MemberServiceImp;
+import com.sweetievegan.auth.service.member.MemberServiceImp;
 import com.sweetievegan.blog.domain.entity.Blog;
 import com.sweetievegan.blog.domain.entity.BlogImage;
 import com.sweetievegan.blog.domain.repository.BlogImageRepository;
@@ -43,6 +43,7 @@ public class BlogServiceImp implements BlogService {
 					.author(blog.getMember().getNickname())
 					.tag(blog.getTags())
 					.createDate(blog.getCreateDate())
+					.summary(blog.getSummary())
 					.build();
 
 			/* Image files ****************************/
@@ -71,7 +72,6 @@ public class BlogServiceImp implements BlogService {
 				.author(blog.getMember().getNickname())
 				.content(blog.getContent())
 				.tags(blog.getTags())
-				.summary(blog.getSummary())
 				.build();
 
 		/* Image files ****************************/

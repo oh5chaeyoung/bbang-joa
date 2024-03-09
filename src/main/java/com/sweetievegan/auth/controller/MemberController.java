@@ -4,7 +4,7 @@ import com.sweetievegan.auth.dto.request.NicknameModifyRequest;
 import com.sweetievegan.auth.dto.request.PasswordModifyRequest;
 import com.sweetievegan.auth.dto.request.EmailCheckRequest;
 import com.sweetievegan.auth.dto.response.MemberResponse;
-import com.sweetievegan.auth.service.MemberServiceImp;
+import com.sweetievegan.auth.service.member.MemberServiceImp;
 import com.sweetievegan.blog.dto.response.BlogListResponse;
 import com.sweetievegan.recipe.dto.response.RecipeListResponse;
 import lombok.RequiredArgsConstructor;

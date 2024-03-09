@@ -1,4 +1,4 @@
-package com.sweetievegan.auth.service;
+package com.sweetievegan.auth.service.member;
 
 import com.sweetievegan.auth.domain.entity.Member;
 import com.sweetievegan.auth.dto.response.MemberResponse;

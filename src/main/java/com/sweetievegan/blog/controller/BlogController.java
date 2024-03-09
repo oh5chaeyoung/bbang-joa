@@ -1,6 +1,6 @@
 package com.sweetievegan.blog.controller;
 
-import com.sweetievegan.auth.service.MemberServiceImp;
+import com.sweetievegan.auth.service.member.MemberServiceImp;
 import com.sweetievegan.blog.dto.request.BlogRegisterRequest;
 import com.sweetievegan.blog.dto.response.BlogDetailResponse;
 import com.sweetievegan.blog.dto.response.BlogListResponse;
