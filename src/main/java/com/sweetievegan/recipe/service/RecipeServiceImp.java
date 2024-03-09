@@ -167,4 +167,17 @@ public class RecipeServiceImp implements RecipeService {
 		recipeRepository.deleteById(recipeId);
 		return recipeId;
 	}
+
+	@Override
+	public Long getAllRecipesCount() {
+		return recipeRepository.count();
+	}
+
+	@Override
+	public List<Long> getAllRecipeIds() {
+		List<Recipe> recipes = recipeRepository.findAll();
+		return recipes.stream()
+				.map(Recipe::getId)
+				.collect(Collectors.toList());
+	}
 }

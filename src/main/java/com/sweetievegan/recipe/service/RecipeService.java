@@ -13,4 +13,6 @@ public interface RecipeService {
 	Long addRecipe(RecipeRegisterRequest request, List<MultipartFile> file, String memberId);
 	RecipeDetailResponse updateRecipeDetail(String memberId, Long recipeId, RecipeRegisterRequest request, List<MultipartFile> file);
 	Long removeRecipe(String memberId, Long recipeId);
+	Long getAllRecipesCount();
+	List<Long> getAllRecipeIds();
 }

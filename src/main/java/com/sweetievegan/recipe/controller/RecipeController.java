@@ -31,6 +31,15 @@ public class RecipeController {
 	public ResponseEntity<RecipeDetailResponse> getRecipeList(@PathVariable("recipeId") Long recipeId) {
 		return ResponseEntity.status(HttpStatus.OK).body(recipeService.findRecipeByRecipeId(recipeId));
 	}
+	@GetMapping("/all-count")
+	public ResponseEntity<Long> getAllRecipesCount() {
+		return ResponseEntity.status(HttpStatus.OK).body(recipeService.getAllRecipesCount());
+	}
+
+	@GetMapping("/all-ids")
+	public ResponseEntity<List<Long>> getAllRecipeIds() {
+		return ResponseEntity.status(HttpStatus.OK).body(recipeService.getAllRecipeIds());
+	}
 	@PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Long> recipeAdd(
 			@RequestPart(value = "file", required = false) List<MultipartFile> file,
