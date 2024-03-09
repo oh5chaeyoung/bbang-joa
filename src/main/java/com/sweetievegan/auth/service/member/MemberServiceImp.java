@@ -51,12 +51,12 @@ public class MemberServiceImp implements MemberService {
 		return MemberResponse.of(memberRepository.save(member));
 	}
 
-	public Member getMemberDetail(String id) {
+	public MemberResponse getMemberDetail(String id) {
 		Member member = memberRepository.findMemberById(id);
 		if (member == null) {
 			throw new GlobalException(GlobalErrorCode.NOT_FOUND_USER);
 		}
-		return member;
+		return MemberResponse.of(member);
 	}
 
 	public String checkEmail(String email) {

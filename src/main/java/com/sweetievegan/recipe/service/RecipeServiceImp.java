@@ -1,7 +1,7 @@
 package com.sweetievegan.recipe.service;
 
 import com.sweetievegan.auth.domain.entity.Member;
-import com.sweetievegan.auth.service.member.MemberServiceImp;
+import com.sweetievegan.auth.domain.repository.MemberRepository;
 import com.sweetievegan.recipe.domain.entity.Recipe;
 import com.sweetievegan.recipe.domain.entity.RecipeImage;
 import com.sweetievegan.recipe.domain.repository.RecipeImageRepository;
@@ -27,10 +27,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class RecipeServiceImp implements RecipeService {
-	private final MemberServiceImp memberServiceImp;
 	private final RecipeRepository recipeRepository;
 	private final ImageService imageService;
 	private final RecipeImageRepository recipeImageRepository;
+	private final MemberRepository  memberRepository;
 
 	@Override
 	public List<RecipeListResponse> getAllRecipes() {
@@ -89,7 +89,7 @@ public class RecipeServiceImp implements RecipeService {
 	}
 	@Override
 	public Long addRecipe(RecipeRegisterRequest request, List<MultipartFile> file, String memberId) {
-		Member member = memberServiceImp.getMemberDetail(memberId);
+		Member member = memberRepository.findMemberById(memberId);
 
 		Recipe recipe = Recipe.builder()
 				.title(request.getTitle())

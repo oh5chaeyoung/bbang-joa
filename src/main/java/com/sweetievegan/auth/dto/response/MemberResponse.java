@@ -18,6 +18,7 @@ public class MemberResponse {
 	private String firstname;
 	private String lastname;
 	private String profile;
+	private String summary;
 	private Authority authority;
 
 	public static MemberResponse of(Member member) {
@@ -28,6 +29,7 @@ public class MemberResponse {
 				.firstname(member.getFirstname())
 				.lastname(member.getLastname())
 				.profile(member.getProfile())
+				.summary(member.getSummary())
 				.authority(member.getAuthority())
 				.build();
 	}
