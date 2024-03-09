@@ -14,11 +14,13 @@ import com.sweetievegan.recipe.domain.repository.RecipeRepository;
 import com.sweetievegan.recipe.dto.response.RecipeListResponse;
 import com.sweetievegan.util.exception.GlobalErrorCode;
 import com.sweetievegan.util.exception.GlobalException;
+import com.sweetievegan.util.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,7 @@ public class MemberServiceImp implements MemberService {
 	private final BlogRepository blogRepository;
 	private final RecipeRepository recipeRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
+	private final ImageService imageService;
 
 	public MemberResponse changeMemberNickname(String email, String nickname){
 		Member member = memberRepository.findByEmail(email)
@@ -48,6 +51,26 @@ public class MemberServiceImp implements MemberService {
 			throw new GlobalException(GlobalErrorCode.NOT_MATCH_PASSWORD);
 		}
 		member.setPassword(passwordEncoder.encode((newPassword)));
+		return MemberResponse.of(memberRepository.save(member));
+	}
+
+	@Override
+	public MemberResponse changeMemberSummary(String id, String summary) {
+		Member member = memberRepository.findById(id)
+				.orElseThrow(() -> new GlobalException(GlobalErrorCode.NOT_FOUND_USER));
+		member.setSummary(summary);
+		return MemberResponse.of(memberRepository.save(member));
+	}
+
+	@Override
+	public MemberResponse changeMemberProfile(String id, MultipartFile file) {
+		Member member = memberRepository.findById(id)
+				.orElseThrow(() -> new GlobalException(GlobalErrorCode.NOT_FOUND_USER));
+		/* remove */
+		imageService.removeFile(member.getProfile());
+		/* add */
+		String profileName = imageService.addOneFile(file, "member");
+		member.setProfile(profileName);
 		return MemberResponse.of(memberRepository.save(member));
 	}
 
