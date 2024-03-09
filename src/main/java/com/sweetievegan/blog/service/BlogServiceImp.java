@@ -165,4 +165,17 @@ public class BlogServiceImp implements BlogService {
 		blogRepository.deleteById(blogId);
 		return blogId;
 	}
+
+	@Override
+	public Long getAllBlogsCount() {
+		return blogRepository.count();
+	}
+
+	@Override
+	public List<Long> getAllBlogIds() {
+		List<Blog> blogs = blogRepository.findAll();
+		return blogs.stream()
+				.map(Blog::getId)
+				.collect(Collectors.toList());
+	}
 }

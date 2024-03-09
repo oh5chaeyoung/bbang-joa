@@ -35,6 +35,16 @@ public class BlogController {
 		return ResponseEntity.status(HttpStatus.OK).body(blogService.findBlogByBlogId(blogId));
 	}
 
+	@GetMapping("/all-count")
+	public ResponseEntity<Long> getAllBlogsCount() {
+		return ResponseEntity.status(HttpStatus.OK).body(blogService.getAllBlogsCount());
+	}
+
+	@GetMapping("/all-ids")
+	public ResponseEntity<List<Long>> getAllBlogIds() {
+		return ResponseEntity.status(HttpStatus.OK).body(blogService.getAllBlogIds());
+	}
+
 	@PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Long> blogAdd(
 			@RequestPart(value = "file", required = false) List<MultipartFile> file,
