@@ -51,6 +51,19 @@ public class MemberServiceImp implements MemberService {
 		return MemberResponse.of(memberRepository.save(member));
 	}
 
+	@Override
+	public MemberResponse changeMemberSummary(String id, String summary) {
+		Member member = memberRepository.findById(id)
+				.orElseThrow(() -> new GlobalException(GlobalErrorCode.NOT_FOUND_USER));
+		member.setSummary(summary);
+		return MemberResponse.of(memberRepository.save(member));
+	}
+
+	@Override
+	public MemberResponse changeMemberProfile(String id, String profile) {
+		return null;
+	}
+
 	public MemberResponse getMemberDetail(String id) {
 		Member member = memberRepository.findMemberById(id);
 		if (member == null) {

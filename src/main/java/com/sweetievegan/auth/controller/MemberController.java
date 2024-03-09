@@ -1,5 +1,6 @@
 package com.sweetievegan.auth.controller;
 
+import com.sweetievegan.auth.dto.request.MemberSummayModifyRequest;
 import com.sweetievegan.auth.dto.request.NicknameModifyRequest;
 import com.sweetievegan.auth.dto.request.PasswordModifyRequest;
 import com.sweetievegan.auth.dto.request.EmailCheckRequest;
@@ -51,5 +52,11 @@ public class MemberController {
 	@PostMapping("/password")
 	public ResponseEntity<MemberResponse> setMemberPassword(@RequestBody PasswordModifyRequest request){
 		return ResponseEntity.ok(memberService.changeMemberPassword(request.getExPassword(), request.getNewPassword()));
+	}
+
+	@PostMapping("/summary")
+	public ResponseEntity<MemberResponse> setMemberSummary(@AuthenticationPrincipal User user,
+	                                                       @RequestBody MemberSummayModifyRequest request){
+		return ResponseEntity.ok(memberService.changeMemberSummary(user.getUsername(), request.getSummary()));
 	}
 }

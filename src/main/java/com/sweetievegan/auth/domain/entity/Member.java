@@ -54,4 +54,5 @@ public class Member {
 	public void setProfile(String profile) {
 		this.profile = profile;
 	}
+	public void setSummary(String summary) { this.summary = summary; }
 }
