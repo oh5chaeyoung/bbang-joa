@@ -4,7 +4,6 @@ import com.sweetievegan.auth.domain.entity.Member;
 import com.sweetievegan.auth.domain.repository.MemberRepository;
 import com.sweetievegan.auth.dto.response.MemberResponse;
 import com.sweetievegan.blog.domain.entity.Blog;
-import com.sweetievegan.blog.domain.entity.BlogImage;
 import com.sweetievegan.blog.domain.repository.BlogRepository;
 import com.sweetievegan.blog.dto.response.BlogListResponse;
 import com.sweetievegan.recipe.domain.entity.Recipe;
@@ -94,23 +93,7 @@ public class MemberServiceImp implements MemberService {
 		List<Blog> blogs = blogRepository.findBlogsByMemberId(memberId);
 		List<BlogListResponse> responses = new ArrayList<>();
 		for(Blog blog : blogs) {
-			BlogListResponse response = BlogListResponse.builder()
-					.id(blog.getId())
-					.title(blog.getTitle())
-					.author(blog.getMember().getNickname())
-					.tag(blog.getTags())
-					.createDate(blog.getCreateDate())
-					.build();
-
-			/* Image files ****************************/
-			if(!blog.getBlogImages().isEmpty()) {
-				List<String> imageNames = blog.getBlogImages().stream()
-						.map(BlogImage::getImageName)
-						.collect(Collectors.toList());
-				response.setImageNames(imageNames);
-			}
-			/* Image files */
-
+			BlogListResponse response = BlogListResponse.of(blog);
 			responses.add(response);
 		}
 		return responses;
