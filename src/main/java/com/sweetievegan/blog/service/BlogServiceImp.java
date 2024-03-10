@@ -35,26 +35,9 @@ public class BlogServiceImp implements BlogService {
 	@Override
 	public List<BlogListResponse> getAllBlogs() {
 		List<Blog> blogs = blogRepository.findAll();
-
 		List<BlogListResponse> responses = new ArrayList<>();
 		for(Blog blog : blogs) {
-			BlogListResponse response = BlogListResponse.builder()
-					.id(blog.getId())
-					.title(blog.getTitle())
-					.author(blog.getMember().getNickname())
-					.tag(blog.getTags())
-					.createDate(blog.getCreateDate())
-					.build();
-
-			/* Image files ****************************/
-			if(!blog.getBlogImages().isEmpty()) {
-				List<String> imageNames = blog.getBlogImages().stream()
-						.map(BlogImage::getImageName)
-						.collect(Collectors.toList());
-				response.setImageNames(imageNames);
-			}
-			/* Image files */
-
+			BlogListResponse response = BlogListResponse.of(blog);
 			responses.add(response);
 		}
 		return responses;
@@ -66,38 +49,13 @@ public class BlogServiceImp implements BlogService {
 		if(blog == null) {
 			throw new GlobalException(GlobalErrorCode.NOT_FOUND_INFO);
 		}
-		BlogDetailResponse response = BlogDetailResponse.builder()
-				.id(blog.getId())
-				.title(blog.getTitle())
-				.author(blog.getMember().getNickname())
-				.content(blog.getContent())
-				.tags(blog.getTags())
-				.build();
-
-		/* Image files ****************************/
-		if(!blog.getBlogImages().isEmpty()) {
-			List<String> imageNames = blog.getBlogImages().stream()
-					.map(BlogImage::getImageName)
-					.collect(Collectors.toList());
-			response.setImageNames(imageNames);
-		}
-		/* Image files */
-
-		return response;
+		return BlogDetailResponse.of(blog);
 	}
 
 	@Override
 	public Long addBlog(BlogRegisterRequest request, List<MultipartFile> file, String memberId) {
 		Member member = memberRepository.findMemberById(memberId);
-
-		Blog blog = Blog.builder()
-				.title(request.getTitle())
-				.member(member)
-				.content(request.getContent())
-				.tags(request.getTags())
-				.blogImages(new ArrayList<>())
-				.build();
-
+		Blog blog = request.toEntity(member);
 		/* Image files ****************************/
 		List<String> blogImageList = imageService.addFile(file, "blog");
 		for(String fn : blogImageList) {
