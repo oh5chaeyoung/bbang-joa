@@ -11,6 +11,7 @@ import java.util.List;
 public class RecipeDetailResponse {
 	private String title;
 	private String author;
+	private String authorSummary;
 	private String duration;
 	private Long level;
 	private String description;

@@ -1,6 +1,6 @@
 package com.sweetievegan.blog.controller;
 
-import com.sweetievegan.auth.service.MemberServiceImp;
+import com.sweetievegan.auth.service.member.MemberServiceImp;
 import com.sweetievegan.blog.dto.request.BlogRegisterRequest;
 import com.sweetievegan.blog.dto.response.BlogDetailResponse;
 import com.sweetievegan.blog.dto.response.BlogListResponse;
@@ -33,6 +33,16 @@ public class BlogController {
 	@GetMapping("/{blogId}")
 	public ResponseEntity<BlogDetailResponse> getBlogById(@PathVariable("blogId") Long blogId) {
 		return ResponseEntity.status(HttpStatus.OK).body(blogService.findBlogByBlogId(blogId));
+	}
+
+	@GetMapping("/all-count")
+	public ResponseEntity<Long> getAllBlogsCount() {
+		return ResponseEntity.status(HttpStatus.OK).body(blogService.getAllBlogsCount());
+	}
+
+	@GetMapping("/all-ids")
+	public ResponseEntity<List<Long>> getAllBlogIds() {
+		return ResponseEntity.status(HttpStatus.OK).body(blogService.getAllBlogIds());
 	}
 
 	@PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })

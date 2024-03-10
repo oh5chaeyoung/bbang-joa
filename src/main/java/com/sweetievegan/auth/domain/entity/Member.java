@@ -1,7 +1,6 @@
 package com.sweetievegan.auth.domain.entity;
 
 import com.sweetievegan.auth.util.Authority;
-import com.sweetievegan.blog.domain.entity.BlogImage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +11,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Slf4j
 @EntityListeners(AuditingEntityListener.class)
@@ -34,8 +32,8 @@ public class Member {
 	private String password;
 	private boolean isDeleted;
 
-	@Column(nullable = true)
 	private String profile;
+	private String summary;
 
 	@Enumerated(EnumType.STRING)
 	private Authority authority;
@@ -56,4 +54,5 @@ public class Member {
 	public void setProfile(String profile) {
 		this.profile = profile;
 	}
+	public void setSummary(String summary) { this.summary = summary; }
 }

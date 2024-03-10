@@ -1,7 +1,7 @@
 package com.sweetievegan.blog.service;
 
 import com.sweetievegan.auth.domain.entity.Member;
-import com.sweetievegan.auth.service.MemberServiceImp;
+import com.sweetievegan.auth.domain.repository.MemberRepository;
 import com.sweetievegan.blog.domain.entity.Blog;
 import com.sweetievegan.blog.domain.entity.BlogImage;
 import com.sweetievegan.blog.domain.repository.BlogImageRepository;
@@ -27,10 +27,11 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class BlogServiceImp implements BlogService {
-	private final MemberServiceImp memberServiceImp;
-	private final BlogRepository blogRepository;
 	private final ImageService imageService;
+	private final BlogRepository blogRepository;
 	private final BlogImageRepository blogImageRepository;
+	private final MemberRepository memberRepository;
+
 	@Override
 	public List<BlogListResponse> getAllBlogs() {
 		List<Blog> blogs = blogRepository.findAll();
@@ -71,7 +72,6 @@ public class BlogServiceImp implements BlogService {
 				.author(blog.getMember().getNickname())
 				.content(blog.getContent())
 				.tags(blog.getTags())
-				.summary(blog.getSummary())
 				.build();
 
 		/* Image files ****************************/
@@ -88,14 +88,13 @@ public class BlogServiceImp implements BlogService {
 
 	@Override
 	public Long addBlog(BlogRegisterRequest request, List<MultipartFile> file, String memberId) {
-		Member member = memberServiceImp.getMemberDetail(memberId);
+		Member member = memberRepository.findMemberById(memberId);
 
 		Blog blog = Blog.builder()
 				.title(request.getTitle())
 				.member(member)
 				.content(request.getContent())
 				.tags(request.getTags())
-				.summary(request.getSummary())
 				.blogImages(new ArrayList<>())
 				.build();
 
@@ -163,5 +162,18 @@ public class BlogServiceImp implements BlogService {
 
 		blogRepository.deleteById(blogId);
 		return blogId;
+	}
+
+	@Override
+	public Long getAllBlogsCount() {
+		return blogRepository.count();
+	}
+
+	@Override
+	public List<Long> getAllBlogIds() {
+		List<Blog> blogs = blogRepository.findAll();
+		return blogs.stream()
+				.map(Blog::getId)
+				.collect(Collectors.toList());
 	}
 }
