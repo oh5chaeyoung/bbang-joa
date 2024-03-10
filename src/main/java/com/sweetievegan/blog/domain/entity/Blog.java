@@ -23,7 +23,6 @@ public class Blog extends BaseTime {
 	private String title;
 	private String content;
 	private String tags;
-	private String summary;
 
 	@OneToMany(mappedBy = "blog")
 	private List<BlogImage> blogImages;
@@ -36,6 +35,5 @@ public class Blog extends BaseTime {
 		this.title = request.getTitle();
 		this.content = request.getContent();
 		this.tags = request.getTags();
-		this.summary = request.getSummary();
 	}
 }

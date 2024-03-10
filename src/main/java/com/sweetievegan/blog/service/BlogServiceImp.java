@@ -44,7 +44,6 @@ public class BlogServiceImp implements BlogService {
 					.author(blog.getMember().getNickname())
 					.tag(blog.getTags())
 					.createDate(blog.getCreateDate())
-					.summary(blog.getSummary())
 					.build();
 
 			/* Image files ****************************/
@@ -96,7 +95,6 @@ public class BlogServiceImp implements BlogService {
 				.member(member)
 				.content(request.getContent())
 				.tags(request.getTags())
-				.summary(request.getSummary())
 				.blogImages(new ArrayList<>())
 				.build();
 
