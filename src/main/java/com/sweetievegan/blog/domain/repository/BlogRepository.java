@@ -10,4 +10,5 @@ import java.util.List;
 public interface BlogRepository extends JpaRepository<Blog, Long> {
 	Blog findBlogById(Long id);
 	List<Blog> findBlogsByMemberId(String memberId);
+	List<Blog> findBlogsByTitleContaining(String keyword);
 }

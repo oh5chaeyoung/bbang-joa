@@ -4,11 +4,9 @@ import com.sweetievegan.auth.domain.entity.Member;
 import com.sweetievegan.auth.domain.repository.MemberRepository;
 import com.sweetievegan.auth.dto.response.MemberResponse;
 import com.sweetievegan.blog.domain.entity.Blog;
-import com.sweetievegan.blog.domain.entity.BlogImage;
 import com.sweetievegan.blog.domain.repository.BlogRepository;
 import com.sweetievegan.blog.dto.response.BlogListResponse;
 import com.sweetievegan.recipe.domain.entity.Recipe;
-import com.sweetievegan.recipe.domain.entity.RecipeImage;
 import com.sweetievegan.recipe.domain.repository.RecipeRepository;
 import com.sweetievegan.recipe.dto.response.RecipeListResponse;
 import com.sweetievegan.util.exception.GlobalErrorCode;
@@ -23,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -94,23 +91,7 @@ public class MemberServiceImp implements MemberService {
 		List<Blog> blogs = blogRepository.findBlogsByMemberId(memberId);
 		List<BlogListResponse> responses = new ArrayList<>();
 		for(Blog blog : blogs) {
-			BlogListResponse response = BlogListResponse.builder()
-					.id(blog.getId())
-					.title(blog.getTitle())
-					.author(blog.getMember().getNickname())
-					.tag(blog.getTags())
-					.createDate(blog.getCreateDate())
-					.build();
-
-			/* Image files ****************************/
-			if(!blog.getBlogImages().isEmpty()) {
-				List<String> imageNames = blog.getBlogImages().stream()
-						.map(BlogImage::getImageName)
-						.collect(Collectors.toList());
-				response.setImageNames(imageNames);
-			}
-			/* Image files */
-
+			BlogListResponse response = BlogListResponse.of(blog);
 			responses.add(response);
 		}
 		return responses;
@@ -121,22 +102,7 @@ public class MemberServiceImp implements MemberService {
 		List<Recipe> recipes = recipeRepository.findRecipesByMemberId(memberId);
 		List<RecipeListResponse> responses = new ArrayList<>();
 		for(Recipe recipe : recipes) {
-			RecipeListResponse response = RecipeListResponse.builder()
-					.id(recipe.getId())
-					.title(recipe.getTitle())
-					.level(recipe.getLevel())
-					.createDate(recipe.getCreateDate())
-					.build();
-
-			/* Image files ****************************/
-			if(!recipe.getRecipeImages().isEmpty()) {
-				List<String> imageNames = recipe.getRecipeImages().stream()
-						.map(RecipeImage::getImageName)
-						.collect(Collectors.toList());
-				response.setImageNames(imageNames);
-			}
-			/* Image files */
-
+			RecipeListResponse response = RecipeListResponse.of(recipe);
 			responses.add(response);
 		}
 		return responses;

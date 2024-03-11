@@ -15,4 +15,5 @@ public interface RecipeService {
 	Long removeRecipe(String memberId, Long recipeId);
 	Long getAllRecipesCount();
 	List<Long> getAllRecipeIds();
+	List<RecipeListResponse> findRecipesByKeyword(String keyword);
 }

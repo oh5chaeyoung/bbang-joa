@@ -38,22 +38,7 @@ public class RecipeServiceImp implements RecipeService {
 
 		List<RecipeListResponse> responses = new ArrayList<>();
 		for(Recipe recipe : recipes) {
-			RecipeListResponse response = RecipeListResponse.builder()
-					.id(recipe.getId())
-					.title(recipe.getTitle())
-					.level(recipe.getLevel())
-					.createDate(recipe.getCreateDate())
-					.build();
-
-			/* Image files ****************************/
-			if(!recipe.getRecipeImages().isEmpty()) {
-				List<String> imageNames = recipe.getRecipeImages().stream()
-						.map(RecipeImage::getImageName)
-						.collect(Collectors.toList());
-				response.setImageNames(imageNames);
-			}
-			/* Image files */
-
+			RecipeListResponse response = RecipeListResponse.of(recipe);
 			responses.add(response);
 		}
 		return responses;
@@ -64,46 +49,12 @@ public class RecipeServiceImp implements RecipeService {
 		if(recipe == null) {
 			throw new GlobalException(GlobalErrorCode.NOT_FOUND_INFO);
 		}
-		RecipeDetailResponse response = RecipeDetailResponse.builder()
-				.title(recipe.getTitle())
-				.author(recipe.getMember().getNickname())
-				.authorSummary(recipe.getMember().getSummary())
-				.duration(recipe.getDuration())
-				.level(recipe.getLevel())
-				.description(recipe.getDescription())
-				.ingredients(recipe.getIngredients())
-				.notes(recipe.getNotes())
-				.steps(recipe.getSteps())
-				.createDate(recipe.getCreateDate())
-				.build();
-
-		/* Image files ****************************/
-		if(!recipe.getRecipeImages().isEmpty()) {
-			List<String> imageNames = recipe.getRecipeImages().stream()
-					.map(RecipeImage::getImageName)
-					.collect(Collectors.toList());
-			response.setImageNames(imageNames);
-		}
-		/* Image files */
-
-		return response;
+		return RecipeDetailResponse.of(recipe);
 	}
 	@Override
 	public Long addRecipe(RecipeRegisterRequest request, List<MultipartFile> file, String memberId) {
 		Member member = memberRepository.findMemberById(memberId);
-
-		Recipe recipe = Recipe.builder()
-				.title(request.getTitle())
-				.member(member)
-				.duration(request.getDuration())
-				.level(request.getLevel())
-				.description(request.getDescription())
-				.ingredients(request.getIngredients())
-				.notes(request.getNotes())
-				.steps(request.getSteps())
-				.recipeImages(new ArrayList<>())
-				.build();
-
+		Recipe recipe = request.toEntity(member);
 		/* Image files ****************************/
 		List<String> recipeImageList = imageService.addFile(file, "recipe");
 		for(String fn : recipeImageList) {
@@ -179,5 +130,17 @@ public class RecipeServiceImp implements RecipeService {
 		return recipes.stream()
 				.map(Recipe::getId)
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<RecipeListResponse> findRecipesByKeyword(String keyword) {
+		List<Recipe> recipes = recipeRepository.findRecipesByTitleContaining(keyword);
+
+		List<RecipeListResponse> responses = new ArrayList<>();
+		for(Recipe recipe : recipes) {
+			RecipeListResponse response = RecipeListResponse.of(recipe);
+			responses.add(response);
+		}
+		return responses;
 	}
 }
