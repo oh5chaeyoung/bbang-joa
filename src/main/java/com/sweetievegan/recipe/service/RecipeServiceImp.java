@@ -131,4 +131,16 @@ public class RecipeServiceImp implements RecipeService {
 				.map(Recipe::getId)
 				.collect(Collectors.toList());
 	}
+
+	@Override
+	public List<RecipeListResponse> findRecipesByKeyword(String keyword) {
+		List<Recipe> recipes = recipeRepository.findRecipesByTitleContaining(keyword);
+
+		List<RecipeListResponse> responses = new ArrayList<>();
+		for(Recipe recipe : recipes) {
+			RecipeListResponse response = RecipeListResponse.of(recipe);
+			responses.add(response);
+		}
+		return responses;
+	}
 }

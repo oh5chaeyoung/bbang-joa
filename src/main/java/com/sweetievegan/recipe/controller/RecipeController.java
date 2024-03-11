@@ -31,6 +31,10 @@ public class RecipeController {
 	public ResponseEntity<RecipeDetailResponse> getRecipeList(@PathVariable("recipeId") Long recipeId) {
 		return ResponseEntity.status(HttpStatus.OK).body(recipeService.findRecipeByRecipeId(recipeId));
 	}
+	@GetMapping("/search")
+	public ResponseEntity<List<RecipeListResponse>> searchRecipessByKeyword(@RequestParam(value = "keyword") String keyword) {
+		return ResponseEntity.status(HttpStatus.OK).body(recipeService.findRecipesByKeyword(keyword));
+	}
 	@GetMapping("/all-count")
 	public ResponseEntity<Long> getAllRecipesCount() {
 		return ResponseEntity.status(HttpStatus.OK).body(recipeService.getAllRecipesCount());
