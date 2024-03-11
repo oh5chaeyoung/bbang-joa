@@ -35,6 +35,11 @@ public class BlogController {
 		return ResponseEntity.status(HttpStatus.OK).body(blogService.findBlogByBlogId(blogId));
 	}
 
+	@GetMapping("/search")
+	public ResponseEntity<List<BlogListResponse>> searchBlogsByKeyword(@RequestParam(value = "keyword") String keyword) {
+		return ResponseEntity.status(HttpStatus.OK).body(blogService.findBlogsByKeyword(keyword));
+	}
+
 	@GetMapping("/all-count")
 	public ResponseEntity<Long> getAllBlogsCount() {
 		return ResponseEntity.status(HttpStatus.OK).body(blogService.getAllBlogsCount());

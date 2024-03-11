@@ -15,4 +15,5 @@ public interface BlogService {
 	Long removeBlog(String memberId, Long blogId);
 	Long getAllBlogsCount();
 	List<Long> getAllBlogIds();
+	List<BlogListResponse> findBlogsByKeyword(String keyword);
 }
