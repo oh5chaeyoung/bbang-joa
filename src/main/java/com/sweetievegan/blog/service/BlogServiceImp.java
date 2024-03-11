@@ -134,4 +134,15 @@ public class BlogServiceImp implements BlogService {
 				.map(Blog::getId)
 				.collect(Collectors.toList());
 	}
+
+	@Override
+	public List<BlogListResponse> findBlogsByKeyword(String keyword) {
+		List<Blog> blogs = blogRepository.findBlogsByTitleContaining(keyword);
+		List<BlogListResponse> responses = new ArrayList<>();
+		for(Blog blog : blogs) {
+			BlogListResponse response = BlogListResponse.of(blog);
+			responses.add(response);
+		}
+		return responses;
+	}
 }
