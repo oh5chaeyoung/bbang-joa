@@ -5,6 +5,7 @@ import com.sweetievegan.blog.domain.entity.BlogImage;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ public class BlogDetailResponse {
 	private String author;
 	private String content;
 	private String tags;
+	private LocalDateTime createDate;
 	private List<String> imageNames;
 
 	public static BlogDetailResponse of(Blog blog) {
@@ -25,6 +27,7 @@ public class BlogDetailResponse {
 										.author(blog.getMember().getNickname())
 										.content(blog.getContent())
 										.tags(blog.getTags())
+										.createDate(blog.getCreateDate())
 										.build();
 
 		if(!blog.getBlogImages().isEmpty()) {

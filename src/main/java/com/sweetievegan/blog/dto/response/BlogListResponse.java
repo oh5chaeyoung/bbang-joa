@@ -25,6 +25,7 @@ public class BlogListResponse {
 				.title(blog.getTitle())
 				.author(blog.getMember().getNickname())
 				.tags(blog.getTags())
+				.createDate(blog.getCreateDate())
 				.build();
 
 		/* Image files ****************************/
