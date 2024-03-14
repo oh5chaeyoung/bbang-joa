@@ -1,7 +1,7 @@
 package com.sweetievegan.config;
 
-import com.sweetievegan.auth.jwt.JwtFilter;
-import com.sweetievegan.auth.updatedjwt.TokenProvider;
+import com.sweetievegan.auth.jwt.TokenAuthenticationFilter;
+import com.sweetievegan.auth.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,7 +14,7 @@ public class JwtSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
 
 	@Override
 	public void configure(HttpSecurity http) {
-		JwtFilter customFilter = new JwtFilter(tokenProvider);
+		TokenAuthenticationFilter customFilter = new TokenAuthenticationFilter(tokenProvider);
 		http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 }

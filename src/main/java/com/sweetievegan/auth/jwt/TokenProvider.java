@@ -1,26 +1,17 @@
-package com.sweetievegan.auth.updatedjwt;
+package com.sweetievegan.auth.jwt;
 
 import com.sweetievegan.auth.domain.entity.Member;
-import com.sweetievegan.auth.jwt.TokenDto;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
 import java.time.Duration;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -37,8 +28,6 @@ public class TokenProvider {
 		Date now = new Date();
 
 		return Jwts.builder()
-				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-				.setIssuer(jwtProperties.getIssuer())
 				.setIssuedAt(now)
 				.setExpiration(expiry)
 				.claim("id", member.getId())
@@ -48,8 +37,9 @@ public class TokenProvider {
 
 	public boolean validToken(String token) {
 		try {
-			Jwts.parser()
+			Jwts.parserBuilder()
 					.setSigningKey(jwtProperties.getSecretKey())
+					.build()
 					.parseClaimsJws(token);
 			return true;
 		} catch (Exception e) {
@@ -70,8 +60,9 @@ public class TokenProvider {
 	}
 
 	private Claims getClaims(String token) {
-		return Jwts.parser()
+		return Jwts.parserBuilder()
 				.setSigningKey(jwtProperties.getSecretKey())
+				.build()
 				.parseClaimsJws(token)
 				.getBody();
 	}

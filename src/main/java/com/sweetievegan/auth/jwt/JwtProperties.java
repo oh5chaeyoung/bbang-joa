@@ -1,4 +1,4 @@
-package com.sweetievegan.auth.updatedjwt;
+package com.sweetievegan.auth.jwt;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

@@ -2,8 +2,8 @@ package com.sweetievegan.config.jwt;
 
 import com.sweetievegan.auth.domain.entity.Member;
 import com.sweetievegan.auth.domain.repository.MemberRepository;
-import com.sweetievegan.auth.updatedjwt.JwtProperties;
-import com.sweetievegan.auth.updatedjwt.TokenProvider;
+import com.sweetievegan.auth.jwt.JwtProperties;
+import com.sweetievegan.auth.jwt.TokenProvider;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;

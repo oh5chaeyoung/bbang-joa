@@ -1,6 +1,6 @@
 package com.sweetievegan.config.jwt;
 
-import com.sweetievegan.auth.updatedjwt.JwtProperties;
+import com.sweetievegan.auth.jwt.JwtProperties;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
