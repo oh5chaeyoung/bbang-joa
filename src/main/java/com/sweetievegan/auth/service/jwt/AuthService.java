@@ -18,7 +18,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -33,7 +32,7 @@ public class AuthService {
 	private final PasswordEncoder passwordEncoder;
 	private final TokenProvider tokenProvider;
 
-	public MemberResponse signup(MemberRegisterRequest request, MultipartFile file) {
+	public MemberResponse signup(MemberRegisterRequest request) {
 		if (memberRepository.existsByEmail(request.getEmail())) {
 			throw new GlobalException(GlobalErrorCode.EXIST_EMAIL);
 		}
@@ -46,7 +45,6 @@ public class AuthService {
 
 		Member member = request.toMember(passwordEncoder);
 		member.setId(createMemberId());
-		member.setProfile(imageService.addOneFile(file, "member"));
 		return MemberResponse.of(memberRepository.save(member));
 	}
 
