@@ -1,5 +1,6 @@
 package com.sweetievegan.auth.jwt;
 
+import com.sweetievegan.auth.updatedjwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -30,10 +31,10 @@ public class JwtFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		String jwt = resolveToken(request);
-		if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-			Authentication authentication = tokenProvider.getAuthentication(jwt);
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-		}
+//		if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+//			Authentication authentication = tokenProvider.getAuthentication(jwt);
+//			SecurityContextHolder.getContext().setAuthentication(authentication);
+//		}
 
 		filterChain.doFilter(request, response);
 	}

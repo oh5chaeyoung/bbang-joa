@@ -6,7 +6,7 @@ import com.sweetievegan.auth.dto.request.MemberLoginRequest;
 import com.sweetievegan.auth.dto.request.MemberRegisterRequest;
 import com.sweetievegan.auth.dto.response.MemberResponse;
 import com.sweetievegan.auth.jwt.TokenDto;
-import com.sweetievegan.auth.jwt.TokenProvider;
+import com.sweetievegan.auth.updatedjwt.TokenProvider;
 import com.sweetievegan.util.exception.GlobalErrorCode;
 import com.sweetievegan.util.exception.GlobalException;
 import com.sweetievegan.util.service.ImageService;
@@ -48,11 +48,11 @@ public class AuthService {
 		return MemberResponse.of(memberRepository.save(member));
 	}
 
-	public TokenDto login(MemberLoginRequest requestDto) {
-		UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
-		Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
-		return tokenProvider.generateTokenDto(authentication);
-	}
+//	public TokenDto login(MemberLoginRequest requestDto) {
+//		UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
+//		Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
+//		return tokenProvider.generateTokenDto(authentication);
+//	}
 
 	public String createMemberId() {
 		UUID uuid = UUID.randomUUID();

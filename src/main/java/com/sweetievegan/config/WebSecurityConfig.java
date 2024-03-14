@@ -2,7 +2,7 @@ package com.sweetievegan.config;
 
 import com.sweetievegan.auth.jwt.JwtAccessDeniedHandler;
 import com.sweetievegan.auth.jwt.JwtAuthenticationEntryPoint;
-import com.sweetievegan.auth.jwt.TokenProvider;
+import com.sweetievegan.auth.updatedjwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
