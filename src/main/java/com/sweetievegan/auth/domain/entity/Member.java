@@ -34,6 +34,7 @@ public class Member {
 
 	private String profile;
 	private String summary;
+	private String provider;
 
 	@Enumerated(EnumType.STRING)
 	private Authority authority;
@@ -55,4 +56,9 @@ public class Member {
 		this.profile = profile;
 	}
 	public void setSummary(String summary) { this.summary = summary; }
+
+	public Member update(String nickname) {
+		this.nickname = nickname;
+		return this;
+	}
 }

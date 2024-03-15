@@ -27,10 +27,15 @@ public class TokenProvider {
 	private String makeToken(Date expiry, Member member) {
 		Date now = new Date();
 
+		log.info("member = {}", member);
+
+		Claims claims = Jwts.claims().setSubject(member.getId());
+
 		return Jwts.builder()
+				.setClaims(claims)
 				.setIssuedAt(now)
 				.setExpiration(expiry)
-				.claim("id", member.getId())
+//				.claim("id", member.getId())
 				.signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())
 				.compact();
 	}

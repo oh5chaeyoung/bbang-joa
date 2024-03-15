@@ -1,8 +1,7 @@
 package com.sweetievegan.config;
 
-import com.sweetievegan.auth.jwt.JwtAccessDeniedHandler;
-import com.sweetievegan.auth.jwt.JwtAuthenticationEntryPoint;
-import com.sweetievegan.auth.jwt.TokenProvider;
+import com.sweetievegan.auth.jwt.*;
+import com.sweetievegan.auth.service.oauth.OAuth2UserCustomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
@@ -20,8 +20,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class WebSecurityConfig {
 	private final TokenProvider tokenProvider;
-	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	private final OAuth2UserCustomService oAuth2UserCustomService;
 	private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -30,30 +32,46 @@ public class WebSecurityConfig {
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http
-				.cors().and()
+		http.cors().and()
 				.httpBasic().disable()
 				.csrf().disable()
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.formLogin().disable()
+				.logout().disable();
 
-				.and()
-				.exceptionHandling()
+		http.sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
+		http.exceptionHandling()
 				.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-				.accessDeniedHandler(jwtAccessDeniedHandler)
+				.accessDeniedHandler(jwtAccessDeniedHandler);
 
-				.and()
-				.authorizeRequests()
+		http.authorizeRequests()
 				.antMatchers("/auth/**").permitAll()
 				.antMatchers("/members/email").permitAll()
 				.antMatchers(HttpMethod.GET, "/recipes").permitAll()
 				.antMatchers(HttpMethod.GET, "/blogs").permitAll()
 				.antMatchers(HttpMethod.GET, "/recipes/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/blogs/**").permitAll()
-				.anyRequest().authenticated()
+				.anyRequest().authenticated();
 
+		http.oauth2Login()
+//				.loginPage("/login")
+				.userInfoEndpoint()
+				.userService(oAuth2UserCustomService)
+//				.authorizationEndpoint()
 				.and()
-				.apply(new JwtSecurityConfig(tokenProvider));
+				.successHandler(oAuth2SuccessHandler);
+
+//		http.logout()
+//				.logoutSuccessUrl("/login");
 
 		return http.build();
+	}
+
+	@Bean
+	public TokenAuthenticationFilter tokenAuthenticationFilter() {
+		return new TokenAuthenticationFilter(tokenProvider);
 	}
 }
