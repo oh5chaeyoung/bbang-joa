@@ -13,7 +13,7 @@ public interface MemberService {
 	MemberResponse changeMemberSummary(String memberId, String summary);
 	MemberResponse changeMemberProfile(String memberId, MultipartFile file);
 	MemberResponse getMemberDetail(String memberId);
-	String checkEmail(String email);
+	boolean checkEmail(String email);
 	List<BlogListResponse> getMyBlogs(String memberId);
 	List<RecipeListResponse> getMyRecipes(String memberId);
 }

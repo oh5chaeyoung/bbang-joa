@@ -42,7 +42,7 @@ public class MemberController {
 	}
 
 	@PostMapping("/email")
-	public ResponseEntity<String> checkEmail(@RequestBody EmailCheckRequest request) {
+	public ResponseEntity<Boolean> checkEmail(@RequestBody EmailCheckRequest request) {
 		return ResponseEntity.ok(memberService.checkEmail(request.getEmail()));
 	}
 
