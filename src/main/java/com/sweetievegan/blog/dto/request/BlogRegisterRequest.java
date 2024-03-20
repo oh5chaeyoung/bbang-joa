@@ -13,6 +13,7 @@ public class BlogRegisterRequest {
 	private String title;
 	private String content;
 	private String tags;
+	private String summary;
 
 	public Blog toEntity(Member member) {
 		return Blog.builder()
@@ -20,6 +21,7 @@ public class BlogRegisterRequest {
 				.title(title)
 				.content(content)
 				.tags(tags)
+				.summary(summary)
 				.blogImages(new ArrayList<>())
 				.build();
 	}
