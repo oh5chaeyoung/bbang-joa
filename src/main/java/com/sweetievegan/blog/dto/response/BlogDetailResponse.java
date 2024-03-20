@@ -17,6 +17,7 @@ public class BlogDetailResponse {
 	private String author;
 	private String content;
 	private String tags;
+	private String summary;
 	private LocalDateTime createDate;
 	private List<String> imageNames;
 
@@ -27,6 +28,7 @@ public class BlogDetailResponse {
 										.author(blog.getMember().getNickname())
 										.content(blog.getContent())
 										.tags(blog.getTags())
+										.summary(blog.getSummary())
 										.createDate(blog.getCreateDate())
 										.build();
 
