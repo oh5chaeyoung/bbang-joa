@@ -78,12 +78,8 @@ public class MemberServiceImp implements MemberService {
 		return MemberResponse.of(member);
 	}
 
-	public String checkEmail(String email) {
-		boolean exist = memberRepository.existsByEmail(email);
-		if(exist) {
-			throw new GlobalException(GlobalErrorCode.EXIST_EMAIL);
-		}
-		return "가입할 수 있는 이메일 입니다.";
+	public boolean checkEmail(String email) {
+		return memberRepository.existsByEmail(email);
 	}
 
 	@Override

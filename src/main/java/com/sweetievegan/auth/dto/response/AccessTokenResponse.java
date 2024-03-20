@@ -1,4 +1,4 @@
-package com.sweetievegan.auth.jwt;
+package com.sweetievegan.auth.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TokenDto {
-	private String grantType;
+public class AccessTokenResponse {
 	private String accessToken;
-	private Long tokenExpiresIn;
 }
