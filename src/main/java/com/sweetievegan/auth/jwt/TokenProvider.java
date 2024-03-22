@@ -6,18 +6,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class TokenProvider {
 	private final JwtProperties jwtProperties;
+	private static final String AUTHORITIES_KEY = "auth";
 
 	public String generateToken(Member member, Duration expiredAt) {
 		Date now = new Date();
@@ -27,15 +30,11 @@ public class TokenProvider {
 	private String makeToken(Date expiry, Member member) {
 		Date now = new Date();
 
-		log.info("member = {}", member);
-
-		Claims claims = Jwts.claims().setSubject(member.getId());
-
 		return Jwts.builder()
-				.setClaims(claims)
+				.setSubject(member.getId())
+				.claim(AUTHORITIES_KEY, member.getAuthority())
 				.setIssuedAt(now)
 				.setExpiration(expiry)
-//				.claim("id", member.getId())
 				.signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())
 				.compact();
 	}
@@ -54,8 +53,10 @@ public class TokenProvider {
 
 	public Authentication getAuthentication(String token) {
 		Claims claims = getClaims(token);
-		Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
-
+		Collection<? extends GrantedAuthority> authorities =
+				Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+						.map(SimpleGrantedAuthority::new)
+						.collect(Collectors.toList());
 		return new UsernamePasswordAuthenticationToken(new User(claims.getSubject(), "", authorities), token, authorities);
 	}
 

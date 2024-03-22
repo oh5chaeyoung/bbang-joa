@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -27,6 +29,18 @@ public class AuthService {
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final TokenProvider tokenProvider;
+
+	public List<MemberResponse> getMembers() {
+		List<Member> members = memberRepository.findAll();
+		if (members == null) {
+			throw new GlobalException(GlobalErrorCode.NOT_FOUND_USER);
+		}
+		List<MemberResponse> responses = new ArrayList<>();
+		for(Member member : members) {
+			responses.add(MemberResponse.of(member));
+		}
+		return responses;
+	}
 
 	public MemberResponse signup(MemberRegisterRequest request) {
 		if (memberRepository.existsByEmail(request.getEmail())) {
