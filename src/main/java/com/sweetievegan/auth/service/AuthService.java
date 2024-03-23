@@ -65,9 +65,11 @@ public class AuthService {
 			throw new BadCredentialsException("잘못된 계정정보입니다.");
 		}
 
+		long tokenExpiresIn = Duration.ofHours(2).toMillis();
 		String token = tokenProvider.generateToken(member, Duration.ofHours(2));
 		return AccessTokenResponse.builder()
 				.accessToken(token)
+				.tokenExpiresIn(tokenExpiresIn)
 				.build();
 	}
 

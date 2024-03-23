@@ -12,7 +12,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -30,8 +29,6 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
 	private Member saveOrUpdate(OAuth2User oAuth2User) {
 		Map<String, Object> attributes = oAuth2User.getAttributes();
 
-		log.info("att = {}", attributes);
-
 		String sub = (String) attributes.get("sub");
 		String email = (String) attributes.get("email");
 		String nickname = (String) attributes.get("name");
@@ -48,10 +45,5 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
 						.isDeleted(false)
 						.build());
 		return memberRepository.save(member);
-	}
-
-	public String createMemberId() {
-		UUID uuid = UUID.randomUUID();
-		return "user_" + uuid.toString().replace("-", "");
 	}
 }
