@@ -48,6 +48,7 @@ public class WebSecurityConfig {
 				.accessDeniedHandler(jwtAccessDeniedHandler);
 
 		http.authorizeRequests()
+				.antMatchers("/admin/**").hasRole("ADMIN")
 				.antMatchers("/auth/**").permitAll()
 				.antMatchers("/members/email").permitAll()
 				.antMatchers(HttpMethod.GET, "/recipes").permitAll()
@@ -57,15 +58,11 @@ public class WebSecurityConfig {
 				.anyRequest().authenticated();
 
 		http.oauth2Login()
-//				.loginPage("/login")
 				.userInfoEndpoint()
 				.userService(oAuth2UserCustomService)
-//				.authorizationEndpoint()
 				.and()
 				.successHandler(oAuth2SuccessHandler);
 
-//		http.logout()
-//				.logoutSuccessUrl("/login");
 
 		return http.build();
 	}
