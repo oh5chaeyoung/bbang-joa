@@ -21,12 +21,12 @@ public class AdminController {
 		return ResponseEntity.ok(authService.getAllMembers());
 	}
 
-	@GetMapping("/blogs/{blogId}")
+	@PutMapping("/blogs/{blogId}")
 	public ResponseEntity<Boolean> blogBlock(@PathVariable("blogId") Long blogId) {
 		return ResponseEntity.ok(authService.blockBlog(blogId));
 	}
 
-	@GetMapping("/recipes/{recipeId}")
+	@PutMapping("/recipes/{recipeId}")
 	public ResponseEntity<Boolean> recipeBlock(@PathVariable("recipeId") Long recipeId) {
 		return ResponseEntity.ok(authService.blockRecipe(recipeId));
 	}
