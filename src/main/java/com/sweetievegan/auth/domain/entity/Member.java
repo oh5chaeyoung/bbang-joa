@@ -61,4 +61,8 @@ public class Member {
 		this.nickname = nickname;
 		return this;
 	}
+
+	public void deleteMember() {
+		this.isDeleted = true;
+	}
 }
