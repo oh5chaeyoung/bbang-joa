@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface RecipeImageRepository extends JpaRepository<RecipeImage, Long> {
-	List<RecipeImage> findRecipeImageByRecipeId(Long id);
+	List<RecipeImage> findRecipeImageByRecipeId(Long recipeId);
 }

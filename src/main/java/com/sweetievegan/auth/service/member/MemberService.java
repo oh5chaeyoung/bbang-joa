@@ -8,12 +8,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface MemberService {
+	MemberResponse findMemberByMemberId(String memberId);
 	MemberResponse changeMemberNickname(String memberId, String nickname);
 	MemberResponse changeMemberPassword(String memberId, String exPassword, String newPassword);
 	MemberResponse changeMemberSummary(String memberId, String summary);
 	MemberResponse changeMemberProfile(String memberId, MultipartFile file);
-	MemberResponse getMemberDetail(String memberId);
-	boolean checkEmail(String email);
-	List<BlogListResponse> getMyBlogs(String memberId);
-	List<RecipeListResponse> getMyRecipes(String memberId);
+	List<BlogListResponse> findBlogsByMemberId(String memberId);
+	List<RecipeListResponse> findRecipesByMemberId(String memberId);
 }

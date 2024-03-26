@@ -69,7 +69,7 @@ public class RecipeServiceImp implements RecipeService {
 		return recipeRepository.save(recipe).getId();
 	}
 	@Override
-	public RecipeDetailResponse updateRecipeDetail(String memberId, Long recipeId, RecipeRegisterRequest request, List<MultipartFile> file) {
+	public RecipeDetailResponse updateRecipe(String memberId, Long recipeId, RecipeRegisterRequest request, List<MultipartFile> file) {
 		Recipe recipe = recipeRepository.findRecipeById(recipeId);
 		if(recipe == null) {
 			throw new GlobalException(GlobalErrorCode.NOT_FOUND_INFO);

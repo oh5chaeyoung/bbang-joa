@@ -24,24 +24,24 @@ public class RecipeController {
 	private final RecipeService recipeService;
 
 	@GetMapping("")
-	public ResponseEntity<List<RecipeListResponse>> getRecipeList() {
+	public ResponseEntity<List<RecipeListResponse>> recipeList() {
 		return ResponseEntity.status(HttpStatus.OK).body(recipeService.getAllRecipes());
 	}
 	@GetMapping("/{recipeId}")
-	public ResponseEntity<RecipeDetailResponse> getRecipeList(@PathVariable("recipeId") Long recipeId) {
+	public ResponseEntity<RecipeDetailResponse> recipeDetails(@PathVariable("recipeId") Long recipeId) {
 		return ResponseEntity.status(HttpStatus.OK).body(recipeService.findRecipeByRecipeId(recipeId));
 	}
 	@GetMapping("/search")
-	public ResponseEntity<List<RecipeListResponse>> searchRecipessByKeyword(@RequestParam(value = "keyword") String keyword) {
+	public ResponseEntity<List<RecipeListResponse>> recipeListByTitleKeyword(@RequestParam(value = "keyword") String keyword) {
 		return ResponseEntity.status(HttpStatus.OK).body(recipeService.findRecipesByKeyword(keyword));
 	}
 	@GetMapping("/all-count")
-	public ResponseEntity<Long> getAllRecipesCount() {
+	public ResponseEntity<Long> recipeCounts() {
 		return ResponseEntity.status(HttpStatus.OK).body(recipeService.getAllRecipesCount());
 	}
 
 	@GetMapping("/all-ids")
-	public ResponseEntity<List<Long>> getAllRecipeIds() {
+	public ResponseEntity<List<Long>> recipeIdList() {
 		return ResponseEntity.status(HttpStatus.OK).body(recipeService.getAllRecipeIds());
 	}
 	@PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
@@ -57,7 +57,7 @@ public class RecipeController {
 			@RequestPart(value = "file", required = false) List<MultipartFile> file,
 			@RequestPart RecipeRegisterRequest request,
 			@AuthenticationPrincipal User user) {
-		return ResponseEntity.status(HttpStatus.OK).body(recipeService.updateRecipeDetail(user.getUsername(), recipeId, request, file));
+		return ResponseEntity.status(HttpStatus.OK).body(recipeService.updateRecipe(user.getUsername(), recipeId, request, file));
 	}
 	@DeleteMapping("/{recipeId}")
 	public ResponseEntity<Long> recipeRemove(
