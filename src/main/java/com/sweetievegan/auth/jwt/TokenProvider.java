@@ -62,7 +62,7 @@ public class TokenProvider {
 
 	public String getUserId(String token) {
 		Claims claims = getClaims(token);
-		return claims.get("id", String.class);
+		return claims.getSubject();
 	}
 
 	private Claims getClaims(String token) {

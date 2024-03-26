@@ -16,7 +16,7 @@ import java.util.Map;
 @Slf4j
 @Getter
 public class JwtFactory {
-	private String subject = "test@test.com";
+	private String subject = "test";
 	private Date issuedAt = new Date();
 	private Date expiration = new Date(new Date().getTime() + Duration.ofDays(14).toMillis());
 	private Map<String, Object> claims = Collections.emptyMap();

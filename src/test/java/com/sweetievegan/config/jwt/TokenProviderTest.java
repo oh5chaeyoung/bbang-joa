@@ -36,11 +36,14 @@ class TokenProviderTest {
 
 		String token = tokenProvider.generateToken(testMember, Duration.ofDays(14));
 
-		String memberId = Jwts.parser()
+		String memberId = Jwts.parserBuilder()
 				.setSigningKey(jwtProperties.getSecretKey())
+				.build()
 				.parseClaimsJws(token)
 				.getBody()
-				.get("id", String.class);
+						.getSubject();
+
+		log.info("token = {}", token);
 
 		assertThat(memberId).isEqualTo(testMember.getId());
 	}
@@ -60,28 +63,32 @@ class TokenProviderTest {
 	@DisplayName("getAuthentication(): 토큰 기반으로 인증 정보를 가져올 수 있다.")
 	@Test
 	void getAuthentication() {
-		String userEmail = "test@test.com";
+		String memberId = "test";
+		String role = "ROLE_USER";
 		String token = JwtFactory.builder()
-				.subject(userEmail)
+				.subject(memberId)
+				.claims(Map.of("auth", role))
 				.build()
 				.createToken(jwtProperties);
 
 		Authentication authentication = tokenProvider.getAuthentication(token);
 
-		assertThat(((UserDetails) authentication.getPrincipal()).getUsername()).isEqualTo(userEmail);
+		assertThat(((UserDetails) authentication.getPrincipal()).getUsername()).isEqualTo(memberId);
 	}
 
 	@DisplayName("getUserId(): 토큰으로 유저 ID를 가져올 수 있다.")
 	@Test
 	void getUserId() {
-		String userId = "test";
+		String memberId = "test";
+		String role = "ROLE_USER";
 		String token = JwtFactory.builder()
-				.claims(Map.of("id", userId))
+				.subject(memberId)
+				.claims(Map.of("auth", role))
 				.build()
 				.createToken(jwtProperties);
 
 		String userIdByToken = tokenProvider.getUserId(token);
 
-		assertThat(userIdByToken).isEqualTo(userId);
+		assertThat(userIdByToken).isEqualTo(memberId);
 	}
 }
