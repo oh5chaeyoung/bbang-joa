@@ -25,6 +25,8 @@ public class Blog extends BaseTime {
 	private String tags;
 	private String summary;
 
+	private boolean isBlocked;
+
 	@OneToMany(mappedBy = "blog")
 	private List<BlogImage> blogImages;
 
@@ -37,5 +39,9 @@ public class Blog extends BaseTime {
 		this.content = request.getContent();
 		this.tags = request.getTags();
 		this.summary = request.getSummary();
+	}
+
+	public void blockBlog() {
+		this.isBlocked = true;
 	}
 }

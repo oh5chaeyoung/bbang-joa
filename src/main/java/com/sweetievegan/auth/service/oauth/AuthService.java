@@ -9,7 +9,9 @@ import java.util.List;
 
 public interface AuthService {
 	boolean checkEmail(String email);
-	List<MemberResponse> getAllMembers();
 	MemberResponse signup(MemberRegisterRequest request);
 	AccessTokenResponse login(MemberLoginRequest request);
+	List<MemberResponse> getAllMembers();
+	Boolean blockBlog(Long blogId);
+	Boolean blockRecipe(Long recipeId);
 }
