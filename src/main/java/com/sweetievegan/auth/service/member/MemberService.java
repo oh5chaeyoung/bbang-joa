@@ -15,4 +15,5 @@ public interface MemberService {
 	MemberResponse changeMemberProfile(String memberId, MultipartFile file);
 	List<BlogListResponse> findBlogsByMemberId(String memberId);
 	List<RecipeListResponse> findRecipesByMemberId(String memberId);
+	Boolean removeMember(String memberId);
 }
