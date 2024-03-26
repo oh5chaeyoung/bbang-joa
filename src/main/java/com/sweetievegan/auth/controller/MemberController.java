@@ -30,12 +30,12 @@ public class MemberController {
 		return ResponseEntity.ok(memberService.findMemberByMemberId(user.getUsername()));
 	}
 
-	@GetMapping("blogs")
+	@GetMapping("/blogs")
 	public ResponseEntity<List<BlogListResponse>> myBlogList(@AuthenticationPrincipal User user){
 		return ResponseEntity.ok(memberService.findBlogsByMemberId(user.getUsername()));
 	}
 
-	@GetMapping("recipes")
+	@GetMapping("/recipes")
 	public ResponseEntity<List<RecipeListResponse>> myRecipeList(@AuthenticationPrincipal User user){
 		return ResponseEntity.ok(memberService.findRecipesByMemberId(user.getUsername()));
 	}
@@ -62,5 +62,10 @@ public class MemberController {
 	public ResponseEntity<MemberResponse> myProfileModify(@AuthenticationPrincipal User user,
 	                                                      @RequestPart(value = "file", required = true) MultipartFile file){
 		return ResponseEntity.ok(memberService.changeMemberProfile(user.getUsername(), file));
+	}
+
+	@PutMapping("")
+	public ResponseEntity<Boolean> memberDelete(@AuthenticationPrincipal User user) {
+		return ResponseEntity.ok(memberService.removeMember(user.getUsername()));
 	}
 }

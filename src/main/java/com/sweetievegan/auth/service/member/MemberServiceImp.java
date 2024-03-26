@@ -35,11 +35,7 @@ public class MemberServiceImp implements MemberService {
 
 	@Override
 	public MemberResponse findMemberByMemberId(String memberId) {
-		Member member = memberRepository.findMemberById(memberId);
-		if (member == null) {
-			throw new GlobalException(GlobalErrorCode.NOT_FOUND_USER);
-		}
-		return MemberResponse.of(member);
+		return MemberResponse.of(getMember(memberId));
 	}
 
 	@Override
@@ -101,5 +97,19 @@ public class MemberServiceImp implements MemberService {
 			responses.add(response);
 		}
 		return responses;
+	}
+
+	@Override
+	public Boolean removeMember(String memberId) {
+		getMember(memberId).deleteMember();
+		return true;
+	}
+
+	private Member getMember(String memberId) {
+		Member member = memberRepository.findMemberById(memberId);
+		if (member == null) {
+			throw new GlobalException(GlobalErrorCode.NOT_FOUND_USER);
+		}
+		return member;
 	}
 }
