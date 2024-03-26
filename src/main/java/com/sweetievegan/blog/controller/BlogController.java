@@ -26,27 +26,27 @@ public class BlogController {
 	private final BlogService blogService;
 
 	@GetMapping("")
-	public ResponseEntity<List<BlogListResponse>> getBlogList() {
+	public ResponseEntity<List<BlogListResponse>> blogList() {
 		return ResponseEntity.status(HttpStatus.OK).body(blogService.getAllBlogs());
 	}
 
 	@GetMapping("/{blogId}")
-	public ResponseEntity<BlogDetailResponse> getBlogById(@PathVariable("blogId") Long blogId) {
+	public ResponseEntity<BlogDetailResponse> blogDetails(@PathVariable("blogId") Long blogId) {
 		return ResponseEntity.status(HttpStatus.OK).body(blogService.findBlogByBlogId(blogId));
 	}
 
 	@GetMapping("/search")
-	public ResponseEntity<List<BlogListResponse>> searchBlogsByKeyword(@RequestParam(value = "keyword") String keyword) {
+	public ResponseEntity<List<BlogListResponse>> blogListByTitleKeyword(@RequestParam(value = "keyword") String keyword) {
 		return ResponseEntity.status(HttpStatus.OK).body(blogService.findBlogsByKeyword(keyword));
 	}
 
 	@GetMapping("/all-count")
-	public ResponseEntity<Long> getAllBlogsCount() {
+	public ResponseEntity<Long> blogCounts() {
 		return ResponseEntity.status(HttpStatus.OK).body(blogService.getAllBlogsCount());
 	}
 
 	@GetMapping("/all-ids")
-	public ResponseEntity<List<Long>> getAllBlogIds() {
+	public ResponseEntity<List<Long>> blogIdList() {
 		return ResponseEntity.status(HttpStatus.OK).body(blogService.getAllBlogIds());
 	}
 
@@ -64,7 +64,7 @@ public class BlogController {
 			@RequestPart(value = "file", required = false) List<MultipartFile> file,
 			@RequestPart BlogRegisterRequest request,
 			@AuthenticationPrincipal User user) {
-		return ResponseEntity.status(HttpStatus.OK).body(blogService.updateBlogDetail(user.getUsername(), blogId, request, file));
+		return ResponseEntity.status(HttpStatus.OK).body(blogService.updateBlog(user.getUsername(), blogId, request, file));
 	}
 
 	@DeleteMapping("/{blogId}")

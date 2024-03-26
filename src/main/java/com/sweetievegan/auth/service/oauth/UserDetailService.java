@@ -1,4 +1,4 @@
-package com.sweetievegan.auth.service;
+package com.sweetievegan.auth.service.oauth;
 
 import com.sweetievegan.auth.domain.entity.CustomUserDetails;
 import com.sweetievegan.auth.domain.entity.Member;
