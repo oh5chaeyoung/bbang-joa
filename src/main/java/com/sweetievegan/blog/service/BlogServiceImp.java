@@ -71,7 +71,7 @@ public class BlogServiceImp implements BlogService {
 	}
 
 	@Override
-	public BlogDetailResponse updateBlogDetail(String memberId, Long blogId, BlogRegisterRequest request, List<MultipartFile> file) {
+	public BlogDetailResponse updateBlog(String memberId, Long blogId, BlogRegisterRequest request, List<MultipartFile> file) {
 		Blog blog = blogRepository.findBlogById(blogId);
 		if(blog == null) {
 			throw new GlobalException(GlobalErrorCode.NOT_FOUND_INFO);

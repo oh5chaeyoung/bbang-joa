@@ -1,4 +1,4 @@
-package com.sweetievegan.auth.service;
+package com.sweetievegan.auth.service.oauth;
 
 import com.sweetievegan.auth.domain.entity.Member;
 import com.sweetievegan.auth.domain.repository.MemberRepository;
@@ -25,16 +25,19 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class AuthService {
+public class AuthServiceImp implements AuthService {
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final TokenProvider tokenProvider;
 
-	public List<MemberResponse> getMembers() {
+	@Override
+	public boolean checkEmail(String email) {
+		return memberRepository.existsByEmail(email);
+	}
+
+	@Override
+	public List<MemberResponse> getAllMembers() {
 		List<Member> members = memberRepository.findAll();
-		if (members == null) {
-			throw new GlobalException(GlobalErrorCode.NOT_FOUND_USER);
-		}
 		List<MemberResponse> responses = new ArrayList<>();
 		for(Member member : members) {
 			responses.add(MemberResponse.of(member));
@@ -42,6 +45,7 @@ public class AuthService {
 		return responses;
 	}
 
+	@Override
 	public MemberResponse signup(MemberRegisterRequest request) {
 		if (memberRepository.existsByEmail(request.getEmail())) {
 			throw new GlobalException(GlobalErrorCode.EXIST_EMAIL);
@@ -49,7 +53,7 @@ public class AuthService {
 
 		/* nickname ****************************/
 		if(request.getNickname() == null) {
-			request.setNickname("HelloUser_" + generateSevenDigitRandomNumber());
+			request.setNickname("HelloUser_" + createSevenDigitRandomNumber());
 		}
 		/* nickname */
 
@@ -58,6 +62,7 @@ public class AuthService {
 		return MemberResponse.of(memberRepository.save(member));
 	}
 
+	@Override
 	public AccessTokenResponse login(MemberLoginRequest request) {
 		Member member = memberRepository.findMemberByEmail(request.getEmail())
 				.orElseThrow(() -> new BadCredentialsException("잘못된 계정정보입니다."));
@@ -73,12 +78,12 @@ public class AuthService {
 				.build();
 	}
 
-	public String createMemberId() {
+	private String createMemberId() {
 		UUID uuid = UUID.randomUUID();
 		return "user_" + uuid.toString().replace("-", "");
 	}
 
-	public String generateSevenDigitRandomNumber() {
+	private String createSevenDigitRandomNumber() {
 		int randomNumber = (int) (Math.random() * 10000000);
 		return String.format("%07d", randomNumber);
 	}

@@ -33,6 +33,16 @@ public class MemberServiceImp implements MemberService {
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final ImageService imageService;
 
+	@Override
+	public MemberResponse findMemberByMemberId(String memberId) {
+		Member member = memberRepository.findMemberById(memberId);
+		if (member == null) {
+			throw new GlobalException(GlobalErrorCode.NOT_FOUND_USER);
+		}
+		return MemberResponse.of(member);
+	}
+
+	@Override
 	public MemberResponse changeMemberNickname(String memberId, String nickname){
 		Member member = memberRepository.findById(memberId)
 				.orElseThrow(() -> new GlobalException(GlobalErrorCode.NOT_FOUND_USER));
@@ -40,6 +50,7 @@ public class MemberServiceImp implements MemberService {
 		return MemberResponse.of(memberRepository.save(member));
 	}
 
+	@Override
 	public MemberResponse changeMemberPassword(String memberId, String exPassword, String newPassword){
 		Member member = memberRepository.findById(memberId)
 				.orElseThrow(() -> new GlobalException(GlobalErrorCode.NOT_FOUND_USER));
@@ -70,20 +81,8 @@ public class MemberServiceImp implements MemberService {
 		return MemberResponse.of(memberRepository.save(member));
 	}
 
-	public MemberResponse getMemberDetail(String memberId) {
-		Member member = memberRepository.findMemberById(memberId);
-		if (member == null) {
-			throw new GlobalException(GlobalErrorCode.NOT_FOUND_USER);
-		}
-		return MemberResponse.of(member);
-	}
-
-	public boolean checkEmail(String email) {
-		return memberRepository.existsByEmail(email);
-	}
-
 	@Override
-	public List<BlogListResponse> getMyBlogs(String memberId) {
+	public List<BlogListResponse> findBlogsByMemberId(String memberId) {
 		List<Blog> blogs = blogRepository.findBlogsByMemberId(memberId);
 		List<BlogListResponse> responses = new ArrayList<>();
 		for(Blog blog : blogs) {
@@ -94,7 +93,7 @@ public class MemberServiceImp implements MemberService {
 	}
 
 	@Override
-	public List<RecipeListResponse> getMyRecipes(String memberId) {
+	public List<RecipeListResponse> findRecipesByMemberId(String memberId) {
 		List<Recipe> recipes = recipeRepository.findRecipesByMemberId(memberId);
 		List<RecipeListResponse> responses = new ArrayList<>();
 		for(Recipe recipe : recipes) {
