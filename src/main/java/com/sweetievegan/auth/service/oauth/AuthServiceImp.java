@@ -7,6 +7,10 @@ import com.sweetievegan.auth.dto.request.MemberRegisterRequest;
 import com.sweetievegan.auth.dto.response.MemberResponse;
 import com.sweetievegan.auth.dto.response.AccessTokenResponse;
 import com.sweetievegan.auth.jwt.TokenProvider;
+import com.sweetievegan.blog.domain.entity.Blog;
+import com.sweetievegan.blog.domain.repository.BlogRepository;
+import com.sweetievegan.recipe.domain.entity.Recipe;
+import com.sweetievegan.recipe.domain.repository.RecipeRepository;
 import com.sweetievegan.util.exception.GlobalErrorCode;
 import com.sweetievegan.util.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +30,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Transactional
 public class AuthServiceImp implements AuthService {
+	private final RecipeRepository recipeRepository;
+	private final BlogRepository blogRepository;
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final TokenProvider tokenProvider;
@@ -33,16 +39,6 @@ public class AuthServiceImp implements AuthService {
 	@Override
 	public boolean checkEmail(String email) {
 		return memberRepository.existsByEmail(email);
-	}
-
-	@Override
-	public List<MemberResponse> getAllMembers() {
-		List<Member> members = memberRepository.findAll();
-		List<MemberResponse> responses = new ArrayList<>();
-		for(Member member : members) {
-			responses.add(MemberResponse.of(member));
-		}
-		return responses;
 	}
 
 	@Override
@@ -76,6 +72,36 @@ public class AuthServiceImp implements AuthService {
 				.accessToken(token)
 				.tokenExpiresIn(tokenExpiresIn)
 				.build();
+	}
+
+	@Override
+	public List<MemberResponse> getAllMembers() {
+		List<Member> members = memberRepository.findAll();
+		List<MemberResponse> responses = new ArrayList<>();
+		for(Member member : members) {
+			responses.add(MemberResponse.of(member));
+		}
+		return responses;
+	}
+
+	@Override
+	public Boolean blockBlog(Long blogId) {
+		Blog blog = blogRepository.findBlogById(blogId);
+		if(blog == null) {
+			throw new GlobalException(GlobalErrorCode.NOT_FOUND_INFO);
+		}
+		blog.blockBlog();
+		return true;
+	}
+
+	@Override
+	public Boolean blockRecipe(Long recipeId) {
+		Recipe recipe = recipeRepository.findRecipeById(recipeId);
+		if(recipe == null) {
+			throw new GlobalException(GlobalErrorCode.NOT_FOUND_INFO);
+		}
+		recipe.blockRecipe();
+		return true;
 	}
 
 	private String createMemberId() {

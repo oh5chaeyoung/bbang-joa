@@ -27,17 +27,14 @@ public class Recipe extends BaseTime {
 	private String notes;
 	private String steps;
 
+	private boolean isBlocked;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;
 
 	@OneToMany(mappedBy = "recipe")
 	private List<RecipeImage> recipeImages;
-
-	public void addRecipeImage(final RecipeImage recipeImage) {
-		recipeImages.add(recipeImage);
-		recipeImage.setRecipe(this);
-	}
 
 	public void editRecipe(RecipeRegisterRequest request) {
 		this.title = request.getTitle();
@@ -47,5 +44,9 @@ public class Recipe extends BaseTime {
 		this.ingredients = request.getIngredients();
 		this.notes = request.getNotes();
 		this.steps = request.getSteps();
+	}
+
+	public void blockRecipe() {
+		this.isBlocked = true;
 	}
 }
