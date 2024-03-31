@@ -21,7 +21,7 @@
 - JWT
 
 TokenProvider.java 일부
-```
+```java
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -62,7 +62,7 @@ public class TokenProvider {
 
 ##### 2. 레시피 게시판
 RecipeController.java 일부
-```
+```java
 @Slf4j
 @RestController
 @RequestMapping("/recipes")
@@ -87,7 +87,7 @@ public class RecipeController {
 ```
 
 RecipeServiceImp.java 일부
-```
+```java
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -124,7 +124,7 @@ public class RecipeServiceImp implements RecipeService {
 
 ##### 3. 블로그 게시판
 BlogController.java 일부
-```
+```java
 @Slf4j
 @RestController
 @RequestMapping("/blogs")
@@ -154,7 +154,7 @@ public class BlogController {
 ```
 
 BlogServiceImp.java 일부
-```
+```java
 @Slf4j
 @Service
 @Transactional
@@ -210,7 +210,7 @@ public class BlogServiceImp implements BlogService {
 
 ##### 4. 단위 테스트
 TokenProviderTest.java 일부
-```
+```java
 package com.sweetievegan.config.jwt;
 
 @Slf4j
@@ -272,8 +272,7 @@ class TokenProviderTest {
 ```
 
 BlogControllerTest.java 일부
-
-```
+```java
 package com.sweetievegan.blog.controller;
 
 @Slf4j
