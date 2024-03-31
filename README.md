@@ -29,11 +29,9 @@ public class TokenProvider {
 	private final JwtProperties jwtProperties;
 	private static final String AUTHORITIES_KEY = "auth";
 
-	public String generateToken(Member member, Duration expiredAt) {
-		Date now = new Date();
-		return makeToken(new Date(now.getTime() + expiredAt.toMillis()), member);
-	}
+	...
 
+	/* Member 정보와 토큰만료기간이 들어오면 JWT를 생성한다 */
 	private String makeToken(Date expiry, Member member) {
 		Date now = new Date();
 
@@ -45,7 +43,9 @@ public class TokenProvider {
 				.signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())
 				.compact();
 	}
-...
+    	...
+
+	/* JWT가 들어오면 Authentication을 제공한다 */
 	public Authentication getAuthentication(String token) {
 		Claims claims = getClaims(token);
 		Collection<? extends GrantedAuthority> authorities =
@@ -55,7 +55,7 @@ public class TokenProvider {
 		return new UsernamePasswordAuthenticationToken(new User(claims.getSubject(), "", authorities), token, authorities);
 	}
 
-...
+    	...
 
 }
 ```
@@ -70,16 +70,19 @@ RecipeController.java 일부
 public class RecipeController {
 	private final RecipeService recipeService;
 
+  	/* 레시피 전체 리스트를 제공한다(모든 사용자 접근 가능) */
 	@GetMapping("")
 	public ResponseEntity<List<RecipeListResponse>> recipeList() {
 		return ResponseEntity.status(HttpStatus.OK).body(recipeService.getAllRecipes());
 	}
+
+  	/* 레시피 아이디가 들어오면 상세 페이지를 제공한다(모든 사용자 접근 가능) */
 	@GetMapping("/{recipeId}")
 	public ResponseEntity<RecipeDetailResponse> recipeDetails(@PathVariable("recipeId") Long recipeId) {
 		return ResponseEntity.status(HttpStatus.OK).body(recipeService.findRecipeByRecipeId(recipeId));
 	}
 
-...
+    	...
 }
 ```
 
@@ -90,11 +93,9 @@ RecipeServiceImp.java 일부
 @RequiredArgsConstructor
 @Transactional
 public class RecipeServiceImp implements RecipeService {
-	private final RecipeRepository recipeRepository;
-	private final ImageService imageService;
-	private final RecipeImageRepository recipeImageRepository;
-	private final MemberRepository  memberRepository;
+	...
 
+  	/* 레시피 전체 리스트를 제공한다(모든 사용자 접근 가능) */
 	@Override
 	public List<RecipeListResponse> getAllRecipes() {
 		List<Recipe> recipes = recipeRepository.findAll();
@@ -106,6 +107,8 @@ public class RecipeServiceImp implements RecipeService {
 		}
 		return responses;
 	}
+
+  	/* 레시피 아이디가 들어오면 상세 페이지를 제공한다(모든 사용자 접근 가능) */
 	@Override
 	public RecipeDetailResponse findRecipeByRecipeId(Long recipeId) {
 		Recipe recipe = recipeRepository.findRecipeById(recipeId);
@@ -115,7 +118,7 @@ public class RecipeServiceImp implements RecipeService {
 		return RecipeDetailResponse.of(recipe);
 	}
 
-...
+    	...
 }
 ```
 
@@ -127,11 +130,9 @@ BlogController.java 일부
 @RequestMapping("/blogs")
 @RequiredArgsConstructor
 public class BlogController {
-	private final MemberServiceImp memberServiceImp;
-	private final BlogService blogService;
+    	...
 
-...
-
+  	/* 블로그 글 정보와 로그인한 사용자 정보가 들어오면 블로그 글을 등록한다 (로그인한 사용자만 접근 가능) */
 	@PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Long> blogAdd(
 			@RequestPart(value = "file", required = false) List<MultipartFile> file,
@@ -140,8 +141,9 @@ public class BlogController {
 		return ResponseEntity.status(HttpStatus.OK).body(blogService.addBlog(request, file, user.getUsername()));
 	}
 
-...
+    	...
 
+  	/* 블로그 아이디와 로그인한 사용자 정보가 들어오면 블로그 글을 삭제한다 (작성자만 접근 가능) */
 	@DeleteMapping("/{blogId}")
 	public ResponseEntity<Long> blogRemove(
 			@PathVariable("blogId") Long blogId,
@@ -158,13 +160,15 @@ BlogServiceImp.java 일부
 @Transactional
 @RequiredArgsConstructor
 public class BlogServiceImp implements BlogService {
-...
+    	...
 
+  	/* 블로그 글 정보와 로그인한 사용자 정보가 들어오면 블로그 글을 등록한다 (로그인한 사용자만 접근 가능) */
 	@Override
 	public Long addBlog(BlogRegisterRequest request, List<MultipartFile> file, String memberId) {
 		Member member = memberRepository.findMemberById(memberId);
 		Blog blog = request.toEntity(member);
-		/* Image files ****************************/
+
+		/* Image files */
 		List<String> blogImageList = imageService.addFile(file, "blog");
 		for(String fn : blogImageList) {
 			blogImageRepository.save(BlogImage.builder()
@@ -180,6 +184,7 @@ public class BlogServiceImp implements BlogService {
 
 	...
 
+  	/* 블로그 아이디와 로그인한 사용자 정보가 들어오면 블로그 글을 삭제한다 (작성자만 접근 가능) */
 	@Override
 	public Long removeBlog(String memberId, Long blogId) {
 		Blog blog = blogRepository.findBlogById(blogId);
@@ -199,7 +204,7 @@ public class BlogServiceImp implements BlogService {
 		return blogId;
 	}
 
-...	
+    	...	
 }
 ```
 
@@ -232,7 +237,7 @@ class TokenProviderTest {
 		assertThat(memberId).isEqualTo(testMember.getId());
 	}
 
-...
+    	...
 
 	@DisplayName("getAuthentication(): 토큰 기반으로 인증 정보를 가져올 수 있다.")
 	@Test
