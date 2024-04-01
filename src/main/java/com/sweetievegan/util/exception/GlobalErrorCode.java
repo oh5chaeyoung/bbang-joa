@@ -10,7 +10,11 @@ public enum GlobalErrorCode {
 	NOT_AUTHORIZED_USER(401,"권한이 없습니다."),
 	NOT_FOUND_USER(401,"다시 로그인해주세요."),
 	EXIST_EMAIL(400, "이미 가입된 이메일입니다."),
-	NOT_MATCH_PASSWORD(400,"비밀번호가 일치하지 않습니다.");
+	NOT_MATCH_PASSWORD(400,"비밀번호가 일치하지 않습니다."),
+	/* EMAIL */
+	FAIL_TO_SEND_EMAIL(500, "이메일 전송에 실패했습니다."),
+	EXPIRED_EMAIL_VALID_CODE(400, "만료된 코드입니다.");
+
 	private int code;
 	private String description;
 	private GlobalErrorCode(int code, String description) {
