@@ -50,6 +50,7 @@ public class WebSecurityConfig {
 		http.authorizeRequests()
 				.antMatchers("/admin/**").hasRole("ADMIN")
 				.antMatchers("/auth/**").permitAll()
+				.antMatchers("/email/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/recipes").permitAll()
 				.antMatchers(HttpMethod.GET, "/blogs").permitAll()
 				.antMatchers(HttpMethod.GET, "/recipes/**").permitAll()

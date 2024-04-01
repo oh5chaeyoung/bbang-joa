@@ -23,6 +23,6 @@ public class BlogRegisterRequest {
 				.tags(tags)
 				.summary(summary)
 				.blogImages(new ArrayList<>())
-				.build();
+				.isBlocked(false).build();
 	}
 }

@@ -1,10 +1,11 @@
 package com.sweetievegan.blog.controller;
 
-import com.sweetievegan.auth.service.member.MemberServiceImp;
 import com.sweetievegan.blog.dto.request.BlogRegisterRequest;
 import com.sweetievegan.blog.dto.response.BlogDetailResponse;
 import com.sweetievegan.blog.dto.response.BlogListResponse;
 import com.sweetievegan.blog.service.BlogService;
+import com.sweetievegan.util.exception.GlobalErrorCode;
+import com.sweetievegan.util.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,6 @@ import java.util.List;
 @RequestMapping("/blogs")
 @RequiredArgsConstructor
 public class BlogController {
-	private final MemberServiceImp memberServiceImp;
 	private final BlogService blogService;
 
 	@GetMapping("")
@@ -71,6 +71,8 @@ public class BlogController {
 	public ResponseEntity<Long> blogRemove(
 			@PathVariable("blogId") Long blogId,
 			@AuthenticationPrincipal User user) {
+		if(user == null)
+			throw new GlobalException(GlobalErrorCode.NOT_AUTHORIZED_USER);
 		return ResponseEntity.status(HttpStatus.OK).body(blogService.removeBlog(user.getUsername(), blogId));
 	}
 }
