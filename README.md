@@ -9,7 +9,7 @@
 
 ## 사용 기술 및 개발 환경
 - Cloud : ```AWS EC2(Ubuntu), ElastiCache Redis, S3```
-- DB : ```MySQL(RDB)```
+- DB : ```MySQL(RDB), Redis```
 - Framework : ```Spring Boot, Spring Security, JUnit, Jenkins```
 - Language : ```Java```
 - Tool : ```IntelliJ, Git, GitHub```
@@ -17,9 +17,12 @@
 ## 내용
 #### 구현 기능
 ##### 1.  회원관리
-- Spring Security
-- JWT
-- AWS ElastiCache Redis
+- 이메일 인증 코드 관리하기(전송, 확인)
+- 이메일 중복 확인하기
+- 회원가입하기
+- 회원탈퇴하기
+- 로그인(JWT 발급)
+- 구글 소셜 로그인(JWT 발급)
 
 TokenProvider.java 일부
 ```java
@@ -62,68 +65,21 @@ public class TokenProvider {
 ```
 
 ##### 2. 레시피 게시판
-RecipeController.java 일부
-```java
-@Slf4j
-@RestController
-@RequestMapping("/recipes")
-@RequiredArgsConstructor
-public class RecipeController {
-	private final RecipeService recipeService;
-
-  	/* 레시피 전체 리스트를 제공한다(모든 사용자 접근 가능) */
-	@GetMapping("")
-	public ResponseEntity<List<RecipeListResponse>> recipeList() {
-		return ResponseEntity.status(HttpStatus.OK).body(recipeService.getAllRecipes());
-	}
-
-  	/* 레시피 아이디가 들어오면 상세 페이지를 제공한다(모든 사용자 접근 가능) */
-	@GetMapping("/{recipeId}")
-	public ResponseEntity<RecipeDetailResponse> recipeDetails(@PathVariable("recipeId") Long recipeId) {
-		return ResponseEntity.status(HttpStatus.OK).body(recipeService.findRecipeByRecipeId(recipeId));
-	}
-
-    	...
-}
-```
-
-RecipeServiceImp.java 일부
-```java
-@Slf4j
-@Service
-@RequiredArgsConstructor
-@Transactional
-public class RecipeServiceImp implements RecipeService {
-	...
-
-  	/* 레시피 전체 리스트를 제공한다(모든 사용자 접근 가능) */
-	@Override
-	public List<RecipeListResponse> getAllRecipes() {
-		List<Recipe> recipes = recipeRepository.findAll();
-
-		List<RecipeListResponse> responses = new ArrayList<>();
-		for(Recipe recipe : recipes) {
-			RecipeListResponse response = RecipeListResponse.of(recipe);
-			responses.add(response);
-		}
-		return responses;
-	}
-
-  	/* 레시피 아이디가 들어오면 상세 페이지를 제공한다(모든 사용자 접근 가능) */
-	@Override
-	public RecipeDetailResponse findRecipeByRecipeId(Long recipeId) {
-		Recipe recipe = recipeRepository.findRecipeById(recipeId);
-		if(recipe == null) {
-			throw new GlobalException(GlobalErrorCode.NOT_FOUND_INFO);
-		}
-		return RecipeDetailResponse.of(recipe);
-	}
-
-    	...
-}
-```
+- 전체 목록보기
+- 상세 페이지보기
+- 작성하기
+- 수정하기
+- 삭제하기
+- 검색하기
 
 ##### 3. 블로그 게시판
+- 전체 목록보기
+- 상세 페이지보기
+- 작성하기
+- 수정하기
+- 삭제하기
+- 검색하기
+
 BlogController.java 일부
 ```java
 @Slf4j
@@ -220,3 +176,6 @@ public class BlogServiceImp implements BlogService {
 
 ### 아키텍처
 ![bj_architecture](https://github.com/oh5chaeyoung/bj/assets/110815151/3d83ebb8-6a40-4942-8047-ae36601e377f)
+
+### 트러블슈팅
+[AWS ElastiCache Redis 적용하기](https://ripe-cheese-d1e.notion.site/O-X-47abd3ebabd94ba7b79f48b73818cb9d?pvs=4)
