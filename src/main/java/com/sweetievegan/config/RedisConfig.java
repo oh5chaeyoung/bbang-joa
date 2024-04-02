@@ -22,10 +22,9 @@ public class RedisConfig {
 	}
 
 	@Bean
-	public RedisTemplate<String, String> stringRedisTemplate() {
+	public RedisTemplate<String, String> redisTemplate() {
 		StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
 		stringRedisTemplate.setConnectionFactory(redisConnectionFactory());
 		return stringRedisTemplate;
 	}
-
 }
