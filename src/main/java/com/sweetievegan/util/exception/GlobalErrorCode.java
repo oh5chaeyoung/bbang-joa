@@ -13,6 +13,7 @@ public enum GlobalErrorCode {
 	NOT_MATCH_PASSWORD(400,"비밀번호가 일치하지 않습니다."),
 	/* EMAIL */
 	FAIL_TO_SEND_EMAIL(500, "이메일 전송에 실패했습니다."),
+	FAIL_TO_SAVE_EMAIL_CODE(500, "이메일 코드 저장에 실패했습니다."),
 	EXPIRED_EMAIL_VALID_CODE(400, "만료된 코드입니다.");
 
 	private int code;
