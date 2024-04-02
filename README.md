@@ -8,7 +8,7 @@
 - 역할 : 백엔드, CI/CD
 
 ## 사용 기술 및 개발 환경
-- Cloud : ```AWS EC2(Ubuntu), S3```
+- Cloud : ```AWS EC2(Ubuntu), ElastiCache Redis, S3```
 - DB : ```MySQL(RDB)```
 - Framework : ```Spring Boot, Spring Security, JUnit, Jenkins```
 - Language : ```Java```
@@ -19,6 +19,7 @@
 ##### 1.  회원관리
 - Spring Security
 - JWT
+- AWS ElastiCache Redis
 
 TokenProvider.java 일부
 ```java
@@ -209,199 +210,13 @@ public class BlogServiceImp implements BlogService {
 ```
 
 ##### 4. 단위 테스트
-TokenProviderTest.java 일부
-```java
-package com.sweetievegan.config.jwt;
-
-@Slf4j
-@SpringBootTest
-class TokenProviderTest {
-	@Autowired
-	private TokenProvider tokenProvider;
-	@Autowired
-	private MemberRepository memberRepository;
-	@Autowired
-	private JwtProperties jwtProperties;
-
-	@DisplayName("generateToken(): 유저 정보와 만료 기간을 전달해 토큰을 생성한다.")
-	@Test
-	void generateToken() {
-		Member testMember = memberRepository.findMemberById("test");
-
-		String token = tokenProvider.generateToken(testMember, Duration.ofDays(14));
-
-		String memberId = Jwts.parser()
-				.setSigningKey(jwtProperties.getSecretKey())
-				.parseClaimsJws(token)
-				.getBody()
-				.get("id", String.class);
-
-		assertThat(memberId).isEqualTo(testMember.getId());
-	}
-
-    	...
-
-	@DisplayName("getAuthentication(): 토큰 기반으로 인증 정보를 가져올 수 있다.")
-	@Test
-	void getAuthentication() {
-		String userEmail = "test@test.com";
-		String token = JwtFactory.builder()
-				.subject(userEmail)
-				.build()
-				.createToken(jwtProperties);
-
-		Authentication authentication = tokenProvider.getAuthentication(token);
-
-		assertThat(((UserDetails) authentication.getPrincipal()).getUsername()).isEqualTo(userEmail);
-	}
-
-	@DisplayName("getUserId(): 토큰으로 유저 ID를 가져올 수 있다.")
-	@Test
-	void getUserId() {
-		String userId = "test";
-		String token = JwtFactory.builder()
-				.claims(Map.of("id", userId))
-				.build()
-				.createToken(jwtProperties);
-
-		String userIdByToken = tokenProvider.getUserId(token);
-
-		assertThat(userIdByToken).isEqualTo(userId);
-	}
-}
-```
-
-BlogControllerTest.java 일부
-```java
-package com.sweetievegan.blog.controller;
-
-@Slf4j
-@SpringBootTest
-@AutoConfigureMockMvc
-class BlogControllerTest {
-	@Autowired
-	protected MockMvc mockMvc;
-	@Autowired
-	private WebApplicationContext webApplicationContext;
-	@Autowired
-	MemberRepository memberRepository;
-	@Autowired
-	BlogRepository blogRepository;
-	@Autowired
-	BlogImageRepository blogImageRepository;
-	@Autowired
-	private TokenProvider tokenProvider;
-
-	Member member;
-
-	@BeforeEach
-	void setSecurityContext() {
-		member = memberRepository.findMemberById("test");
-
-		String token = tokenProvider.generateToken(member, Duration.ofDays(14));
-
-		Authentication authentication = tokenProvider.getAuthentication(token);
-
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-	}
-
-	@BeforeEach
-	public void mockMvcSetUp() {
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-	}
-
-	@BeforeEach
-	void deleteBlogs() { ... }
-
-	/* CRUD TEST */
-	@DisplayName("addBlog : 블로그 글 등록에 성공한다.")
-	@Test
-	void addBlog() throws Exception {
-		final String url = "/blogs";
-		int num = createRandomNumber();
-		BlogRegisterRequest requestDto = BlogRegisterRequest.builder()
-				.title("title_" + num)
-				.content("content_" + num)
-				.tags("tag_" + num)
-				.summary("summary_" + num)
-				.build();
-		String requestJson = new ObjectMapper().writeValueAsString(requestDto);
-		MockMultipartFile request = new MockMultipartFile("request", "request", "application/json", requestJson.getBytes(StandardCharsets.UTF_8));
-
-		MockMultipartFile file1 = new MockMultipartFile("file", "testFile1.txt", "text/plain", "Test file content 1".getBytes());
-
-		mockMvc.perform(multipart(url)
-					.file(file1)
-					.file(request))
-			.andExpect(status().isOk());
-	}
-
-	@DisplayName("modifyBlog : 블로그 글 수정에 성공한다.")
-	@Test
-	void modifyBlog() throws Exception {
-		final String url = "/blogs/{blogId}";
-		int num = createRandomNumber();
-		Blog savedBlog = createDefaultBlog();
-		BlogRegisterRequest requestDto = BlogRegisterRequest.builder()
-				.title("modified title_" + num)
-				.content("modified content_" + num)
-				.tags("modified tag_" + num)
-				.summary("modified summary_" + num)
-				.build();
-		String requestJson = new ObjectMapper().writeValueAsString(requestDto);
-		MockMultipartFile request = new MockMultipartFile("request", "request", "application/json", requestJson.getBytes(StandardCharsets.UTF_8));
-
-		MockMultipartFile file1 = new MockMultipartFile("file", "testFile1.txt", "text/plain", "Test file content 1".getBytes());
-
-		mockMvc.perform(MockMvcRequestBuilders
-					.multipart(HttpMethod.PUT, url, savedBlog.getId())
-					.file(file1)
-					.file(request))
-			.andExpect(status().isOk()) ;
-	}
-
-	@DisplayName("findAllBlogs : 블로그 목록 조회에 성공한다.")
-	@Test
-	void findAllBlogs() throws Exception {
-		final String url = "/blogs";
-		Blog savedBlog = createDefaultBlog();
-
-		final ResultActions resultActions = mockMvc.perform(get(url)
-							.accept(MediaType.APPLICATION_JSON));
-		resultActions
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$[0].title").value(savedBlog.getTitle()));
-	}
-
-	@DisplayName("findBlog : 블로그 글 조회에 성공한다.")
-	@Test
-	void findBlog() throws Exception {
-		final String url = "/blogs/{blogId}";
-		Blog savedBlog = createDefaultBlog();
-
-		final ResultActions resultActions = mockMvc.perform(get(url, savedBlog.getId()));
-
-		resultActions
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.content").value(savedBlog.getContent()));
-	}
-
-	@DisplayName("deleteBlog : 블로그 글 삭제에 성공한다.")
-	@Test
-	void deleteBlog() throws Exception {
-		final String url = "/blogs/{blogId}";
-		Blog savedBlog = createDefaultBlog();
-
-		mockMvc.perform(delete(url, savedBlog.getId()))
-				.andExpect(status().isOk()) ;
-	}
-
-	...
-
-}
-```
+- TokenProviderTest.java
+- BlogControllerTest.java
+<br>
 
 ## 산출물
 ### API 명세서
 [API명세서](https://oh5chaeyoung.notion.site/API-BBANG-JOA-3d0faf8164064872a5a43c0e0ce68b87?pvs=4)
+
+### 아키텍처
+![bj_architecture](https://github.com/oh5chaeyoung/bj/assets/110815151/3d83ebb8-6a40-4942-8047-ae36601e377f)
