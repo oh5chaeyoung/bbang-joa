@@ -66,7 +66,7 @@ public class EmailServiceImp implements EmailService {
 		try {
 			redisUtil.setDataExpire(email, authKey, 60 * 3L);
 		} catch (Exception e) {
-			throw new GlobalException(GlobalErrorCode.FAIL_TO_SEND_EMAIL);
+			throw new GlobalException(GlobalErrorCode.FAIL_TO_SAVE_EMAIL_CODE);
 		}
 	}
 }
