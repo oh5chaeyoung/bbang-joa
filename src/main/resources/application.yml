@@ -68,6 +68,5 @@ logging:
     com.sweetievegan: debug
 
 jwt:
-#  secret: ${JWT_SECRET}
   issuer: ${JWT_ISSUER}
   secret_key: ${JWT_SECRET_KEY}
