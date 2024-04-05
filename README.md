@@ -171,11 +171,7 @@ public class BlogServiceImp implements BlogService {
 <br>
 
 ## 산출물
-### API 명세서
-[API명세서](https://oh5chaeyoung.notion.site/API-BBANG-JOA-3d0faf8164064872a5a43c0e0ce68b87?pvs=4)
-
-### 아키텍처
-![bj_architecture](https://github.com/oh5chaeyoung/bj/assets/110815151/3d83ebb8-6a40-4942-8047-ae36601e377f)
-
-### 트러블슈팅
-[AWS ElastiCache Redis 적용하기](https://ripe-cheese-d1e.notion.site/O-X-47abd3ebabd94ba7b79f48b73818cb9d?pvs=4)
+[자세한 내용은 wiki에서 확인하실 수 있습니다 :)](https://github.com/oh5chaeyoung/bbang-joa/wiki)
+- 아키텍처
+- API 명세서
+- 트러블슈팅
